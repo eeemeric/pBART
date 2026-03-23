@@ -5,32 +5,41 @@ class DropboxHandler {
     }
     
     async saveSessionData(sessionData) {
-        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
-        const filename = `pbart_session_${sessionData.subject_id}_${timestamp}.json`;
-        const path = `/Apps/pBART_data/${filename}`;
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+    const filename = `pbart_session_${sessionData.subject_id}_${timestamp}.json`;
+    const path = `/Apps/pBART_data/${filename}`;
+    
+    console.log('DEBUG: Attempting to save:', filename);
+    console.log('DEBUG: Path:', path);
+    console.log('DEBUG: Data:', sessionData);
+    
+    try {
+        console.log('DEBUG: Sending fetch request...');
+        const response = await fetch('https://content.dropboxapi.com/2/files/upload', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer sl.u.AGYAXLf9tY1eizehtXLeEqAMAz7Pjm6Edalipu42JiGeeJT_pPxYjJJLLDgqvvLqnBg8g5k5LRpr3A6SMt_F8lR8MwNWDSxImgC6tiDWQ72vFz0AvaDSsj_i4pCeXpzKEr_XDH9hgXazsqn_bKCkfp2d5EBNoHDPzQHKw0Uj1hoYrW-SOKhMRpy4VzGx5QCTpp5MCjOl1ZKXKKIiNzoa4VLz9r_gy2KbDO9BAZPkLj5zYHrR8O1S9sRMSWMZFDvUCmjCZWvWQy867IwZBVBKz4f5uZt6W-vmPN5R4R35vA9FSSYC59YEMn80sI0Y1XqMgQ9h36aCVP0alR7uMZqQaoL4V18sdSpu4_wPoRKFSMJMA9Kvpg2K6pcXoZniWN4vAC0FOwP18-SH9YlNSv3YgnW7RcgWtU7Y_WJdROu22-VUaMTlnh_bMgNjFL_g_v4XiPBuWofIQQoAMeWW1QxKI1GIG-qa6WRts1N7zoz3Nuww1D_Zpji_ZMHnPjkFA2IK2f83zCfhYegTmNOVVzUDIXDwcTwrB2D2NtxChKQZIyx_U-zth8vSdDVH8roQnN-AFIsyLIEBFgmSFcIoSKRbc-oLuhF7pwCjT4tPkaqDzwVbQI-6VKR6McOC_SXMcNmi_aP49mPGkJjhm0O2lTkwkl7x1qdBsL8T_DE7kGZsFq9Y5BciD6ASntEnIEyfgNFIUq0tUc5FpwqRYn8CyRh5xurd4OAzBdvpQq3fQCYhTcvC4wRVjvr3R_RfQNY8w85zn7JTMybyO0ed-86b4fgD9C-0RfB1JDZ5aRSthh1EO6WAcoFyyo_92QL_xjdz4VZbeVov84mx-0Q7oLEozSog97o0MZPG3V_tF3n3rTCxLg2eMDjxNFm6NmJ1iw0FlUHtmXSxFhCCbmsNmbybw6PJdv9X-WFzuDQOvK2AAONK6PCyNRBTlbAOXB7EFpLX2eqUP75rW94ZQaVaYZ153tmJrC00_jJ8WvWEiQLBhPi9UXQzW2N58K-Mc2YFSD9Im-8vqErxGRULWL_I9Bo8hBJkLYELDnM0g4krnsxWb2dt8LNlxGXQVLlRmoKavTGfRNwuJErPv5YqRH7t0FPmUPXEOrjbqi5b0B0BdXFSH5Bjq0z1-yh4iGuYtldVg6wjOTDvPWDd4XfrWaIfWXnC2wUluSgtjUkDlgG5abGYqlc-C0y2PT_Kkt_v1o-eCsuufsxwiKOQTy1Zs0YUONSyb8tTq37whkMPlZ6ce5z8s_gbgJWyxjA4vNEyvnpIZJQMmOZ5EU`,
+                'Dropbox-API-Arg': JSON.stringify({
+                    path: path,
+                    mode: 'add',
+                    autorename: true
+                }),
+                'Content-Type': 'application/octet-stream'
+            },
+            body: JSON.stringify(sessionData)
+        });
         
-        try {
-            const response = await fetch('https://content.dropboxapi.com/2/files/upload', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${this.accessToken}`,
-                    'Dropbox-API-Arg': JSON.stringify({
-                        path: path,
-                        mode: 'add',
-                        autorename: true
-                    }),
-                    'Content-Type': 'application/octet-stream'
-                },
-                body: JSON.stringify(sessionData)
-            });
-            
-            if (!response.ok) {
-                console.error(`Dropbox upload failed: ${response.statusText}`);
-            } else {
-                console.log(`Saved to Dropbox: ${filename}`);
-            }
-        } catch (error) {
-            console.error('Error saving to Dropbox:', error);
+        console.log('DEBUG: Response status:', response.status);
+        console.log('DEBUG: Response ok:', response.ok);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('DEBUG: Dropbox error response:', errorText);
+        } else {
+            console.log('DEBUG: Successfully saved to Dropbox!');
         }
+    } catch (error) {
+        console.error('DEBUG: Catch error:', error);
     }
+}
 }
