@@ -203,6 +203,20 @@ class pBART {
                 <p style="font-size: 16px; color: #666;">Type your username and press ENTER</p>
             `;
         } else if (this.game_state === GameState.WAITING_FOR_CHOICE) {
+            // Randomize positions each trial
+            if (!this.trial.positions_set) {
+                this.trial.hit_on_left = Math.random() > 0.5;
+                this.trial.positions_set = true;
+            }
+            
+            const hitColor = '#87CEEB';
+            const stayColor = '#ffffff';
+            
+            const leftButton = this.trial.hit_on_left ? 'HIT' : 'STAY';
+            const rightButton = this.trial.hit_on_left ? 'STAY' : 'HIT';
+            const leftColor = this.trial.hit_on_left ? hitColor : stayColor;
+            const rightColor = this.trial.hit_on_left ? stayColor : hitColor;
+            
             content.innerHTML = `
                 <div style="font-size: 14px; margin-bottom: 30px; text-align: left;">
                     <div>Sequence: ${this.sequence_number}/${this.max_sequences}</div>
@@ -213,12 +227,10 @@ class pBART {
                 </div>
                 <div style="display: flex; justify-content: space-around; margin: 50px 0;">
                     <div style="text-align: center;">
-                        <div style="width: 120px; height: 120px; border-radius: 50%; background-color: #87CEEB; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold;">HIT</div>
-                        <div style="font-size: 18px;">← LEFT</div>
+                        <div style="width: 120px; height: 120px; border-radius: 50%; background-color: ${leftColor}; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; border: 3px solid black;">${leftButton}</div>
                     </div>
                     <div style="text-align: center;">
-                        <div style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid black; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold;">STAY</div>
-                        <div style="font-size: 18px;">RIGHT →</div>
+                        <div style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid black; background-color: ${rightColor}; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold;">${rightButton}</div>
                     </div>
                 </div>
             `;
@@ -228,6 +240,7 @@ class pBART {
                     ${this.trial.earned_tokens}
                 </div>
                 <p style="font-size: 24px;">Revealing...</p>
+            `;
             `;
         } else if (this.game_state === GameState.WIN) {
             if (this.session_complete) {
