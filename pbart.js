@@ -242,7 +242,7 @@ class pBART {
                 <p style="font-size: 24px;">Revealing...</p>
             `;
             `;
-        } else if (this.game_state === GameState.WIN) {
+       } else if (this.game_state === GameState.WIN) {
             if (this.session_complete) {
                 content.innerHTML = `
                     <h1 style="font-size: 48px; color: green; margin-bottom: 50px;">Session Complete!</h1>
