@@ -41,7 +41,7 @@ class pBART {
         this.session_complete = false;
         this.trial_history = [];
         
-        this.token_weights = [15, 12, 10, 8, 6, 5, 4, 3, 2, 1];
+        this.token_weights = [1, 1, 1, 1, 1, 1, 1, 1, 1, 4];
         this.dropbox = new DropboxHandler('sl.u.AGYAXLf9tY1eizehtXLeEqAMAz7Pjm6Edalipu42JiGeeJT_pPxYjJJLLDgqvvLqnBg8g5k5LRpr3A6SMt_F8lR8MwNWDSxImgC6tiDWQ72vFz0AvaDSsj_i4pCeXpzKEr_XDH9hgXazsqn_bKCkfp2d5EBNoHDPzQHKw0Uj1hoYrW-SOKhMRpy4VzGx5QCTpp5MCjOl1ZKXKKIiNzoa4VLz9r_gy2KbDO9BAZPkLj5zYHrR8O1S9sRMSWMZFDvUCmjCZWvWQy867IwZBVBKz4f5uZt6W-vmPN5R4R35vA9FSSYC59YEMn80sI0Y1XqMgQ9h36aCVP0alR7uMZqQaoL4V18sdSpu4_wPoRKFSMJMA9Kvpg2K6pcXoZniWN4vAC0FOwP18-SH9YlNSv3YgnW7RcgWtU7Y_WJdROu22-VUaMTlnh_bMgNjFL_g_v4XiPBuWofIQQoAMeWW1QxKI1GIG-qa6WRts1N7zoz3Nuww1D_Zpji_ZMHnPjkFA2IK2f83zCfhYegTmNOVVzUDIXDwcTwrB2D2NtxChKQZIyx_U-zth8vSdDVH8roQnN-AFIsyLIEBFgmSFcIoSKRbc-oLuhF7pwCjT4tPkaqDzwVbQI-6VKR6McOC_SXMcNmi_aP49mPGkJjhm0O2lTkwkl7x1qdBsL8T_DE7kGZsFq9Y5BciD6ASntEnIEyfgNFIUq0tUc5FpwqRYn8CyRh5xurd4OAzBdvpQq3fQCYhTcvC4wRVjvr3R_RfQNY8w85zn7JTMybyO0ed-86b4fgD9C-0RfB1JDZ5aRSthh1EO6WAcoFyyo_92QL_xjdz4VZbeVov84mx-0Q7oLEozSog97o0MZPG3V_tF3n3rTCxLg2eMDjxNFm6NmJ1iw0FlUHtmXSxFhCCbmsNmbybw6PJdv9X-WFzuDQOvK2AAONK6PCyNRBTlbAOXB7EFpLX2eqUP75rW94ZQaVaYZ153tmJrC00_jJ8WvWEiQLBhPi9UXQzW2N58K-Mc2YFSD9Im-8vqErxGRULWL_I9Bo8hBJkLYELDnM0g4krnsxWb2dt8LNlxGXQVLlRmoKavTGfRNwuJErPv5YqRH7t0FPmUPXEOrjbqi5b0B0BdXFSH5Bjq0z1-yh4iGuYtldVg6wjOTDvPWDd4XfrWaIfWXnC2wUluSgtjUkDlgG5abGYqlc-C0y2PT_Kkt_v1o-eCsuufsxwiKOQTy1Zs0YUONSyb8tTq37whkMPlZ6ce5z8s_gbgJWyxjA4vNEyvnpIZJQMmOZ5EU');
         
         document.addEventListener('keydown', (e) => this.handleKeydown(e));
@@ -78,13 +78,21 @@ class pBART {
                 this.username_input += e.key;
             }
         } else if (this.game_state === GameState.WAITING_FOR_CHOICE) {
-            if (e.key === 'ArrowLeft') {
-                e.preventDefault();
-                this.handle_hit();
-            } else if (e.key === 'ArrowRight') {
-                e.preventDefault();
-                this.handle_stay();
-            }
+			if (e.key === 'ArrowLeft') {
+				e.preventDefault();
+				if (this.trial.hit_on_left) {
+					this.handle_hit();
+				} else {
+					this.handle_stay();
+				}
+			} else if (e.key === 'ArrowRight') {
+				e.preventDefault();
+				if (this.trial.hit_on_left) {
+					this.handle_stay();
+				} else {
+					this.handle_hit();
+				}
+			}
         } else if ([GameState.WIN, GameState.BUST].includes(this.game_state)) {
             if (e.key === ' ') {
                 e.preventDefault();
@@ -203,68 +211,179 @@ class pBART {
                 <p style="font-size: 16px; color: #666;">Type your username and press ENTER</p>
             `;
         } else if (this.game_state === GameState.WAITING_FOR_CHOICE) {
-            // Randomize positions each trial
-            if (!this.trial.positions_set) {
-                this.trial.hit_on_left = Math.random() > 0.5;
-                this.trial.positions_set = true;
-            }
-            
-            const hitColor = '#87CEEB';
-            const stayColor = '#ffffff';
-            
-            const leftButton = this.trial.hit_on_left ? 'HIT' : 'STAY';
-            const rightButton = this.trial.hit_on_left ? 'STAY' : 'HIT';
-            const leftColor = this.trial.hit_on_left ? hitColor : stayColor;
-            const rightColor = this.trial.hit_on_left ? stayColor : hitColor;
-            
-            content.innerHTML = `
-                <div style="font-size: 14px; margin-bottom: 30px; text-align: left;">
-                    <div>Sequence: ${this.sequence_number}/${this.max_sequences}</div>
-                    <div>Total Tokens: ${this.total_accumulated_tokens}</div>
-                </div>
-                <div style="font-size: 72px; margin: 50px 0; font-weight: bold;">
-                    ${this.trial.earned_tokens}
-                </div>
-                <div style="display: flex; justify-content: space-around; margin: 50px 0;">
-                    <div style="text-align: center;">
-                        <div style="width: 120px; height: 120px; border-radius: 50%; background-color: ${leftColor}; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; border: 3px solid black;">${leftButton}</div>
-                    </div>
-                    <div style="text-align: center;">
-                        <div style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid black; background-color: ${rightColor}; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold;">${rightButton}</div>
-                    </div>
-                </div>
-            `;
+			// Randomize positions each trial
+			if (!this.trial.positions_set) {
+				this.trial.hit_on_left = Math.random() > 0.5;
+				this.trial.positions_set = true;
+			}
+			
+			const hitColor = '#87CEEB';
+			const stayColor = '#ffffff';
+			
+			const leftButton = this.trial.hit_on_left ? 'HIT' : 'STAY';
+			const rightButton = this.trial.hit_on_left ? 'STAY' : 'HIT';
+			const leftColor = this.trial.hit_on_left ? hitColor : stayColor;
+			const rightColor = this.trial.hit_on_left ? stayColor : hitColor;
+			
+			content.innerHTML = `
+				<div style="font-size: 14px; margin-bottom: 30px; text-align: left;">
+					<div>Sequence: ${this.sequence_number}/${this.max_sequences}</div>
+					<div>Total Tokens: ${this.total_accumulated_tokens}</div>
+				</div>
+				
+				<!-- Central Annulus (SVG) -->
+				<div style="width: 200px; height: 200px; margin: 30px auto;">
+					<svg viewBox="0 0 200 200" style="width: 100%; height: 100%;">
+						<!-- Outer circle (background) -->
+						<circle cx="100" cy="100" r="95" fill="none" stroke="#ddd" stroke-width="8"/>
+						<!-- Filled annulus (proportional to 20 tokens) -->
+						<circle cx="100" cy="100" r="95" fill="none" stroke="#333" stroke-width="8" 
+								stroke-dasharray="${this.trial.earned_tokens * 29.845} 596.9"
+								stroke-dashoffset="0"
+								transform="rotate(-90 100 100)"
+								stroke-linecap="round"/>
+						<!-- Inner circle with tokens -->
+						<circle cx="100" cy="100" r="60" fill="#e8e8e8" stroke="black" stroke-width="2"/>
+						<text x="100" y="115" font-size="60" font-weight="bold" text-anchor="middle">${this.trial.earned_tokens}</text>
+					</svg>
+				</div>
+				
+				<!-- HIT and STAY buttons -->
+				<div style="display: flex; justify-content: space-around; margin: 30px 0;">
+					<div style="text-align: center;">
+						<div style="width: 120px; height: 120px; border-radius: 50%; background-color: ${leftColor}; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; border: 3px solid black;">${leftButton}</div>
+					</div>
+					<div style="text-align: center;">
+						<div style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid black; background-color: ${rightColor}; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold;">${rightButton}</div>
+					</div>
+				</div>
+			`;
         } else if (this.game_state === GameState.REVEALING_OUTCOME) {
-            content.innerHTML = `
-                <div style="font-size: 72px; margin: 100px 0; font-weight: bold;">
-                    ${this.trial.earned_tokens}
-                </div>
-                <p style="font-size: 24px;">Revealing...</p>
-            `;
+			const tokenColors = ['#FF6B6B', '#FF8E72', '#FFA500', '#FFD700', '#90EE90', '#87CEEB', '#6495ED', '#9370DB', '#FF1493', '#FFB6C1'];
+			const revealedColor = tokenColors[this.trial.tokens_this_hit - 1] || '#888888';
+			
+			// Show colored circle where the HIT button was
+			const hitPosition = this.trial.hit_on_left ? 'left' : 'right';
+			
+			content.innerHTML = `
+				<div style="font-size: 14px; margin-bottom: 30px; text-align: left;">
+					<div>Sequence: ${this.sequence_number}/${this.max_sequences}</div>
+					<div>Total Tokens: ${this.total_accumulated_tokens}</div>
+				</div>
+				
+				<!-- Central Annulus (SVG) -->
+				<div style="width: 200px; height: 200px; margin: 30px auto;">
+					<svg viewBox="0 0 200 200" style="width: 100%; height: 100%;">
+						<!-- Outer circle (background) -->
+						<circle cx="100" cy="100" r="95" fill="none" stroke="#ddd" stroke-width="8"/>
+						<!-- Filled annulus (proportional to 20 tokens) -->
+						<circle cx="100" cy="100" r="95" fill="none" stroke="#333" stroke-width="8" 
+								stroke-dasharray="${this.trial.earned_tokens * 29.845} 596.9"
+								stroke-dashoffset="0"
+								transform="rotate(-90 100 100)"
+								stroke-linecap="round"/>
+						<!-- Inner circle with tokens -->
+						<circle cx="100" cy="100" r="60" fill="#e8e8e8" stroke="black" stroke-width="2"/>
+						<text x="100" y="115" font-size="60" font-weight="bold" text-anchor="middle">${this.trial.earned_tokens}</text>
+					</svg>
+				</div>
+				
+				<!-- Revealed token circle -->
+				<div style="display: flex; justify-content: space-around; margin: 30px 0;">
+					${hitPosition === 'left' ? `
+						<div style="text-align: center;">
+							<div style="width: 120px; height: 120px; border-radius: 50%; background-color: ${revealedColor}; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; border: 3px solid black; color: white;">+${this.trial.tokens_this_hit}</div>
+						</div>
+						<div style="width: 120px; height: 120px;"></div>
+					` : `
+						<div style="width: 120px; height: 120px;"></div>
+						<div style="text-align: center;">
+							<div style="width: 120px; height: 120px; border-radius: 50%; background-color: ${revealedColor}; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; border: 3px solid black; color: white;">+${this.trial.tokens_this_hit}</div>
+						</div>
+					`}
+				</div>
+			`;
        } else if (this.game_state === GameState.WIN) {
-            if (this.session_complete) {
-                content.innerHTML = `
-                    <h1 style="font-size: 48px; color: green; margin-bottom: 50px;">Session Complete!</h1>
-                    <div style="font-size: 24px; margin: 30px 0;">
-                        <div>Total Tokens: ${this.total_accumulated_tokens}</div>
-                        <div>Sequences: ${this.sequence_number}/${this.max_sequences}</div>
-                    </div>
-                    <p style="font-size: 18px; margin-top: 30px;">Saved to Dropbox!</p>
-                `;
-            } else {
-                content.innerHTML = `
-                    <h1 style="font-size: 48px; color: green; margin-bottom: 50px;">WIN!</h1>
-                    <div style="font-size: 24px; margin: 50px 0;">+${this.trial.earned_tokens} tokens</div>
-                    <p style="font-size: 18px;">Press SPACE to continue</p>
-                `;
-            }
-        } else if (this.game_state === GameState.BUST) {
-            content.innerHTML = `
-                <h1 style="font-size: 48px; color: red; margin-bottom: 50px;">BUST!</h1>
-                <div style="font-size: 24px; margin: 50px 0;">All tokens lost</div>
-                <p style="font-size: 18px;">Press SPACE to continue</p>
-            `;
-        }
+			if (this.session_complete) {
+				content.innerHTML = `
+					<h1 style="font-size: 48px; color: green; margin-bottom: 30px;">Session Complete!</h1>
+					
+					<!-- Central Annulus (SVG) -->
+					<div style="width: 200px; height: 200px; margin: 30px auto;">
+						<svg viewBox="0 0 200 200" style="width: 100%; height: 100%;">
+							<!-- Outer circle (background) -->
+							<circle cx="100" cy="100" r="95" fill="none" stroke="#ddd" stroke-width="8"/>
+							<!-- Filled annulus (proportional to 20 tokens) -->
+							<circle cx="100" cy="100" r="95" fill="none" stroke="#333" stroke-width="8" 
+									stroke-dasharray="${this.trial.earned_tokens * 29.845} 596.9"
+									stroke-dashoffset="0"
+									transform="rotate(-90 100 100)"
+									stroke-linecap="round"/>
+							<!-- Inner circle with tokens -->
+							<circle cx="100" cy="100" r="60" fill="#e8e8e8" stroke="black" stroke-width="2"/>
+							<text x="100" y="115" font-size="60" font-weight="bold" text-anchor="middle">${this.trial.earned_tokens}</text>
+						</svg>
+					</div>
+					
+					<div style="font-size: 24px; margin: 30px 0;">
+						<div>Sequences: ${this.sequence_number}/${this.max_sequences}</div>
+					</div>
+					<p style="font-size: 18px; margin-top: 30px;">Saved to Dropbox!</p>
+				`;
+			} else {
+				content.innerHTML = `
+					<h1 style="font-size: 48px; color: green; margin-bottom: 30px;">WIN!</h1>
+					
+					<!-- Central Annulus (SVG) -->
+					<div style="width: 200px; height: 200px; margin: 30px auto;">
+						<svg viewBox="0 0 200 200" style="width: 100%; height: 100%;">
+							<!-- Outer circle (background) -->
+							<circle cx="100" cy="100" r="95" fill="none" stroke="#ddd" stroke-width="8"/>
+							<!-- Filled annulus (proportional to 20 tokens) -->
+							<circle cx="100" cy="100" r="95" fill="none" stroke="#333" stroke-width="8" 
+									stroke-dasharray="${this.trial.earned_tokens * 29.845} 596.9"
+									stroke-dashoffset="0"
+									transform="rotate(-90 100 100)"
+									stroke-linecap="round"/>
+							<!-- Inner circle with tokens -->
+							<circle cx="100" cy="100" r="60" fill="#e8e8e8" stroke="black" stroke-width="2"/>
+							<text x="100" y="115" font-size="60" font-weight="bold" text-anchor="middle">${this.trial.earned_tokens}</text>
+						</svg>
+					</div>
+					
+					<div style="font-size: 24px; margin: 20px 0;">+${this.trial.earned_tokens} tokens</div>
+					<p style="font-size: 18px; margin-top: 20px;">Press SPACE to continue</p>
+				`;
+			}
+		} else if (this.game_state === GameState.BUST) {
+			// Calculate overage (tokens beyond 20)
+			const overage = this.trial.sequence_total - 20;
+			const overage_percentage = Math.min(overage / 20, 1.0); // Cap at 100% for display
+			
+			content.innerHTML = `
+				<h1 style="font-size: 48px; color: red; margin-bottom: 30px;">BUST!</h1>
+				
+				<!-- Central Annulus (SVG) - Full black + red overage -->
+				<div style="width: 200px; height: 200px; margin: 30px auto;">
+					<svg viewBox="0 0 200 200" style="width: 100%; height: 100%;">
+						<!-- Full black annulus (background) -->
+						<circle cx="100" cy="100" r="95" fill="none" stroke="black" stroke-width="8"/>
+						<!-- Red overage segment -->
+						<circle cx="100" cy="100" r="95" fill="none" stroke="red" stroke-width="8" 
+								stroke-dasharray="${overage_percentage * 596.9} 596.9"
+								stroke-dashoffset="0"
+								transform="rotate(-90 100 100)"
+								stroke-linecap="round"/>
+						<!-- Inner circle with 0 -->
+						<circle cx="100" cy="100" r="60" fill="#e8e8e8" stroke="black" stroke-width="2"/>
+						<text x="100" y="115" font-size="60" font-weight="bold" text-anchor="middle">0</text>
+					</svg>
+				</div>
+				
+				<div style="font-size: 24px; margin: 20px 0; color: red;">All tokens lost</div>
+				<p style="font-size: 18px; margin-top: 20px;">Press SPACE to continue</p>
+			`;
+		}
     }
     
     gameLoop() {
