@@ -241,7 +241,6 @@ class pBART {
                 </div>
                 <p style="font-size: 24px;">Revealing...</p>
             `;
-            `;
        } else if (this.game_state === GameState.WIN) {
             if (this.session_complete) {
                 content.innerHTML = `
