@@ -173,7 +173,7 @@ class pBART {
                 this.trial.earned_tokens += this.trial.tokens_this_hit;
                 this.trial.sequence_total += this.trial.tokens_this_hit;
                 
-                if (this.trial.sequence_total >= 20) {
+                if (this.trial.sequence_total > 20) {
                     this.trial.result = 'BUST';
                     this.total_accumulated_tokens = 0;
                     this.trial.total_accumulated = 0;
