@@ -156,14 +156,16 @@ class pBART {
     }
     
     save_session() {
-        const sessionData = {
-            subject_id: this.subject_id,
-            total_tokens_accumulated: this.total_accumulated_tokens,
-            total_sequences: this.sequence_number,
-            trials: this.trial_history
-        };
-        this.dropbox.saveSessionData(sessionData);
-    }
+	    console.log('DEBUG: save_session() called!');
+	    const sessionData = {
+	        subject_id: this.subject_id,
+	        total_tokens_accumulated: this.total_accumulated_tokens,
+	        total_sequences: this.sequence_number,
+	        trials: this.trial_history
+	    };
+	    console.log('DEBUG: Calling dropbox.saveSessionData()');
+	    this.dropbox.saveSessionData(sessionData);
+	}
     
     update() {
         this.timer += 1;
