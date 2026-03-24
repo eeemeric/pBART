@@ -89,7 +89,6 @@ class pBART {
 		                this.subject_id = this.username_input;
 		                this.reset_sequence();
 		            }
-		        }
 		    } else if (e.key === 'Backspace') {
 		        e.preventDefault();
 		        this.username_input = this.username_input.slice(0, -1);
