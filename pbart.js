@@ -69,7 +69,7 @@ class pBART {
         `;
     }
     
-    handleKeydown(e) {
+    async handleKeydown(e) {
         if (this.game_state === GameState.WELCOME) {
             if (e.key === ' ') {
                 e.preventDefault();
