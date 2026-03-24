@@ -199,10 +199,30 @@ class pBART {
         const content = document.getElementById('content');
         
         if (this.game_state === GameState.WELCOME) {
-            content.innerHTML = `
-                <h1 style="font-size: 48px; margin-bottom: 100px;">Balloon Analogue Risk Task</h1>
-                <p style="font-size: 24px;">Press SPACE to begin</p>
-            `;
+		    content.innerHTML = `
+		        <h1 style="font-size: 48px; margin-bottom: 30px;">🎮 Balloon Analogue Risk Task</h1>
+		        
+		        <div style="max-width: 600px; text-align: left; font-size: 18px; line-height: 1.6; margin: 30px auto;">
+		            <h2 style="font-size: 24px; margin-bottom: 15px;">Goal</h2>
+		            <p style="margin-bottom: 20px;">Accumulate as many tokens as possible</p>
+		            
+		            <h2 style="font-size: 24px; margin-bottom: 15px;">Rules</h2>
+		            <ul style="margin-bottom: 20px;">
+		                <li>Each sequence starts at 0 tokens</li>
+		                <li>Press <strong>LEFT arrow</strong> to HIT: reveal 1-10 tokens (risky!)</li>
+		                <li>Press <strong>RIGHT arrow</strong> to STAY: lock in your tokens</li>
+		            </ul>
+		            
+		            <h2 style="font-size: 24px; margin-bottom: 15px;">Outcomes</h2>
+		            <ul style="margin-bottom: 30px;">
+		                <li>If you reach exactly 20 tokens → <strong>WIN!</strong></li>
+		                <li>If you exceed 20 tokens → <strong>BUST</strong> (lose all!)</li>
+		                <li>Press STAY anytime to cash out safely</li>
+		            </ul>
+		        </div>
+		        
+		        <p style="font-size: 24px; margin-top: 30px;">Press SPACE to begin</p>
+		    `;		
         } else if (this.game_state === GameState.USERNAME_INPUT) {
             content.innerHTML = `
                 <h1 style="font-size: 36px; margin-bottom: 50px;">Enter Username</h1>
