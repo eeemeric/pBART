@@ -209,8 +209,8 @@ class pBART {
 		            <h2 style="font-size: 28px; margin-bottom: 15px;">Rules</h2>
 		            <ul style="margin-bottom: 20px;">
 		                <li>Each sequence starts at 0 tokens</li>
-		                <li>Press the arrow key pointing towards <strong>HIT/strong> to reveal 1-10 tokens (risky!)</li>
-		                <li>Press the arrow key pointing towards <strong>STAY/strong> to cash out your tokens safely</li>
+		                <li>Press the arrow key pointing towards <strong>HIT</strong> to reveal 1-10 tokens (risky!)</li>
+		                <li>Press the arrow key pointing towards <strong>STAY</strong> to cash out your tokens safely</li>
 		            </ul>
 		            
 		            <h2 style="font-size: 28px; margin-bottom: 15px;">Outcomes</h2>
@@ -221,7 +221,7 @@ class pBART {
 		            </ul>
 		        </div>
 		        
-		        <p style="font-size: 24px; margin-top: 30px;">Press SPACE to begin</p>
+		        <p style="font-size: 28px; margin-top: 30px;">Press SPACE to begin</p>
 		    `;		
         } else if (this.game_state === GameState.USERNAME_INPUT) {
             content.innerHTML = `
