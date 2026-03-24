@@ -12,7 +12,8 @@ class DropboxHandler {
     console.log('DEBUG: Attempting to save:', filename);
     console.log('DEBUG: Path:', path);
     console.log('DEBUG: Data:', sessionData);
-
+    }
+    
     async listSessionFiles() {
         try {
             const response = await fetch('https://www.dropboxapi.com/2/files/list_folder', {
