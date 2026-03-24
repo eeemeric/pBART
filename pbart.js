@@ -46,7 +46,19 @@ class pBART {
         document.addEventListener('keydown', (e) => this.handleKeydown(e));
         this.gameLoop();
     }
-    
+
+	async checkUsernameExists(username) {
+	    try {
+	        const files = await this.dropbox.listSessionFiles();
+	        // Check if any file starts with this username
+	        const exists = files.some(file => file.name.startsWith(`pbart_session_${username}_`));
+	        return exists;
+	    } catch (error) {
+	        console.error('Error checking username:', error);
+	        return false;
+	    }
+	}
+	
     createUI() {
         // Remove canvas, add divs instead
         const container = document.body;
