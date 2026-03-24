@@ -12,7 +12,28 @@ class DropboxHandler {
     console.log('DEBUG: Attempting to save:', filename);
     console.log('DEBUG: Path:', path);
     console.log('DEBUG: Data:', sessionData);
-    
+
+    async listSessionFiles() {
+        try {
+            const response = await fetch('https://www.dropboxapi.com/2/files/list_folder', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.accessToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    path: '/Apps/pBART_data',
+                    recursive: false
+                })
+            });
+            
+            const data = await response.json();
+            return data.entries || [];
+        } catch (error) {
+            console.error('Error listing files:', error);
+            return [];
+        }
+    }
     try {
         console.log('DEBUG: Sending fetch request...');
         const response = await fetch('https://content.dropboxapi.com/2/files/upload', {
