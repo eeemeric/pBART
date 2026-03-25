@@ -123,6 +123,11 @@ class pBART {
 				this.game_state = GameState.INTER_SEQUENCE_DELAY;
 				this.timer = 0;
 			}
+		} else if (this.game_state === GameState.LEADERBOARD) {
+		    if (e.key === 'Escape') {
+		        e.preventDefault();
+		        this.game_state = GameState.WELCOME;
+		    }
 		}
 	}
 
@@ -448,6 +453,49 @@ class pBART {
 				<div style="font-size: 24px; margin: 20px 0; color: red;">All tokens lost</div>
 				<p style="font-size: 18px; margin-top: 20px;">Press SPACE to continue</p>
 			`;
+		} else if (this.game_state === GameState.LEADERBOARD) {
+		    let leaderboardHTML = `
+		        <h1 style="font-size: 48px; margin-bottom: 40px;">🏆 Top Scores</h1>
+		        
+		        <table style="width: 100%; max-width: 700px; margin: 0 auto; border-collapse: collapse; font-size: 20px;">
+		            <thead>
+		                <tr style="background-color: #007bff; color: white;">
+		                    <th style="padding: 15px; text-align: left; border: 2px solid #333;">Rank</th>
+		                    <th style="padding: 15px; text-align: left; border: 2px solid #333;">Player</th>
+		                    <th style="padding: 15px; text-align: center; border: 2px solid #333;">Tokens</th>
+		                    <th style="padding: 15px; text-align: center; border: 2px solid #333;">Risk Index</th>
+		                </tr>
+		            </thead>
+		            <tbody>
+		    `;
+		    
+		    if (this.leaderboard_data && this.leaderboard_data.length > 0) {
+		        this.leaderboard_data.forEach((entry, index) => {
+		            leaderboardHTML += `
+		                <tr style="background-color: ${index % 2 === 0 ? '#f9f9f9' : 'white'}; border: 1px solid #ddd;">
+		                    <td style="padding: 15px; text-align: left; border: 1px solid #ddd;">${index + 1}</td>
+		                    <td style="padding: 15px; text-align: left; border: 1px solid #ddd;">${entry.subject_id}</td>
+		                    <td style="padding: 15px; text-align: center; border: 1px solid #ddd;">${entry.total_tokens}</td>
+		                    <td style="padding: 15px; text-align: center; border: 1px solid #ddd;">${entry.risk_index || 'N/A'}</td>
+		                </tr>
+		            `;
+		        });
+		    } else {
+		        leaderboardHTML += `
+		            <tr>
+		                <td colspan="4" style="padding: 20px; text-align: center;">No scores yet</td>
+		            </tr>
+		        `;
+		    }
+		    
+		    leaderboardHTML += `
+		            </tbody>
+		        </table>
+		        
+		        <p style="font-size: 18px; margin-top: 40px; color: #666;">Press ESC to go back</p>
+		    `;
+		    
+		    content.innerHTML = leaderboardHTML;
 		}
 	}
 
