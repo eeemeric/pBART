@@ -472,15 +472,6 @@ class pBART {
 		        <p style="font-size: 18px; margin-top: 40px; color: #666;">Press ESC to go back</p>
 		    `;
 		}																						
-		    
-		leaderboardHTML += `
-				</tbody>
-			</table>
-			
-			<p style="font-size: 18px; margin-top: 40px; color: #666;">Press ESC to go back</p>
-		`;
-		
-		content.innerHTML = leaderboardHTML;
 	}
 
 	gameLoop() {
