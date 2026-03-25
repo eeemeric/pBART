@@ -7,7 +7,8 @@ const GameState = {
 	REVEALING_OUTCOME: 'REVEALING_OUTCOME',
 	WIN: 'WIN',
 	BUST: 'BUST',
-	INTER_SEQUENCE_DELAY: 'INTER_SEQUENCE_DELAY'
+	INTER_SEQUENCE_DELAY: 'INTER_SEQUENCE_DELAY',
+	LEADERBOARD: 'LEADERBOARD'
 };
 
 class Trial {
@@ -71,10 +72,14 @@ class pBART {
 
 	async handleKeydown(e) {
 		if (this.game_state === GameState.WELCOME) {
-			if (e.key === ' ') {
-				e.preventDefault();
-				this.game_state = GameState.USERNAME_INPUT;
-			}
+		    if (e.key === ' ') {
+		        e.preventDefault();
+		        this.game_state = GameState.USERNAME_INPUT;
+		    } else if (e.key.toLowerCase() === 'l') {
+		        e.preventDefault();
+		        this.showLeaderboard();
+		    }
+		}
 		} else if (this.game_state === GameState.USERNAME_INPUT) {
 			if (e.key === 'Enter') {
 				e.preventDefault();
@@ -170,20 +175,39 @@ class pBART {
 	}
 
 	save_trial() {
-		this.trial.timestamp = new Date().toISOString();
-		this.trial_history.push({ ...this.trial });
+	    this.trial.timestamp = new Date().toISOString();
+	    this.trial_history.push({...this.trial});
+	    
+	    // Track stats for leaderboard
+	    if (!this.trial_stats) {
+	        this.trial_stats = {
+	            total_hits: 0,
+	            win_trials: 0,
+	            hits_on_wins: 0
+	        };
+	    }
+	    
+	    this.trial_stats.total_hits += this.trial.trial_number; // Count of HIT choices
+	    
+	    if (this.trial.result === 'WIN') {
+	        this.trial_stats.win_trials += 1;
+	        this.trial_stats.hits_on_wins += this.trial.trial_number;
+	    }
 	}
 
 	save_session() {
-		console.log('DEBUG: save_session() called!');
-		const sessionData = {
-			subject_id: this.subject_id,
-			total_tokens_accumulated: this.total_accumulated_tokens,
-			total_sequences: this.sequence_number,
-			trials: this.trial_history
-		};
-		console.log('DEBUG: Calling dropbox.saveSessionData()');
-		this.dropbox.saveSessionData(sessionData);
+	    const riskIndex = this.trial_stats && this.trial_stats.win_trials > 0 
+	        ? (this.trial_stats.hits_on_wins / this.trial_stats.win_trials).toFixed(2)
+	        : 0;
+	    
+	    const sessionData = {
+	        subject_id: this.subject_id,
+	        total_tokens_accumulated: this.total_accumulated_tokens,
+	        total_sequences: this.sequence_number,
+	        risk_index: riskIndex,
+	        trials: this.trial_history
+	    };
+	    this.dropbox.saveSessionData(sessionData);
 	}
 
 	update() {
