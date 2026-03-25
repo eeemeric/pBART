@@ -465,29 +465,22 @@ class pBART {
 		            </p>
 		            
 		            <p style="font-size: 16px; color: #666; margin-top: 30px;">
-		                ${7} session files currently stored
+		                All participant data securely backed up
 		            </p>
 		        </div>
 		        
 		        <p style="font-size: 18px; margin-top: 40px; color: #666;">Press ESC to go back</p>
 		    `;
-		    } else {
-		        leaderboardHTML += `
-		            <tr>
-		                <td colspan="4" style="padding: 20px; text-align: center;">No scores yet</td>
-		            </tr>
-		        `;
-		    }
+		}																						
 		    
-		    leaderboardHTML += `
-		            </tbody>
-		        </table>
-		        
-		        <p style="font-size: 18px; margin-top: 40px; color: #666;">Press ESC to go back</p>
-		    `;
-		    
-		    content.innerHTML = leaderboardHTML;
-		}
+		leaderboardHTML += `
+				</tbody>
+			</table>
+			
+			<p style="font-size: 18px; margin-top: 40px; color: #666;">Press ESC to go back</p>
+		`;
+		
+		content.innerHTML = leaderboardHTML;
 	}
 
 	gameLoop() {
