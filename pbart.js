@@ -509,7 +509,7 @@ class pBART {
 		    
 		    content.innerHTML = leaderboardHTML;
 		}
-
+	}
 	gameLoop() {
 	    //console.log('Loop tick, state:', this.game_state);
 	    this.update();
