@@ -453,32 +453,24 @@ class pBART {
 				<p style="font-size: 18px; margin-top: 20px;">Press SPACE to continue</p>
 			`;
 		} else if (this.game_state === GameState.LEADERBOARD) {
-		    let leaderboardHTML = `
-		        <h1 style="font-size: 48px; margin-bottom: 40px;">🏆 Top Scores</h1>
+		    content.innerHTML = `
+		        <h1 style="font-size: 48px; margin-bottom: 40px;">🏆 Leaderboard</h1>
 		        
-		        <table style="width: 100%; max-width: 700px; margin: 0 auto; border-collapse: collapse; font-size: 20px;">
-		            <thead>
-		                <tr style="background-color: #007bff; color: white;">
-		                    <th style="padding: 15px; text-align: left; border: 2px solid #333;">Rank</th>
-		                    <th style="padding: 15px; text-align: left; border: 2px solid #333;">Player</th>
-		                    <th style="padding: 15px; text-align: center; border: 2px solid #333;">Tokens</th>
-		                    <th style="padding: 15px; text-align: center; border: 2px solid #333;">Risk Index</th>
-		                </tr>
-		            </thead>
-		            <tbody>
+		        <div style="max-width: 700px; margin: 0 auto; padding: 30px; background-color: #f9f9f9; border-radius: 10px;">
+		            <p style="font-size: 20px; margin-bottom: 20px;">📊 Live leaderboard coming soon!</p>
+		            
+		            <p style="font-size: 18px; margin: 20px 0;">For now, all session data is automatically saved to:</p>
+		            <p style="font-family: monospace; background-color: #eee; padding: 15px; margin: 20px 0; border-radius: 5px; font-size: 16px;">
+		                Dropbox → Apps → pBART_data
+		            </p>
+		            
+		            <p style="font-size: 16px; color: #666; margin-top: 30px;">
+		                ${7} session files currently stored
+		            </p>
+		        </div>
+		        
+		        <p style="font-size: 18px; margin-top: 40px; color: #666;">Press ESC to go back</p>
 		    `;
-		    
-		    if (this.leaderboard_data && this.leaderboard_data.length > 0) {
-		        this.leaderboard_data.forEach((entry, index) => {
-		            leaderboardHTML += `
-		                <tr style="background-color: ${index % 2 === 0 ? '#f9f9f9' : 'white'}; border: 1px solid #ddd;">
-		                    <td style="padding: 15px; text-align: left; border: 1px solid #ddd;">${index + 1}</td>
-		                    <td style="padding: 15px; text-align: left; border: 1px solid #ddd;">${entry.subject_id}</td>
-		                    <td style="padding: 15px; text-align: center; border: 1px solid #ddd;">${entry.total_tokens}</td>
-		                    <td style="padding: 15px; text-align: center; border: 1px solid #ddd;">${entry.risk_index || 'N/A'}</td>
-		                </tr>
-		            `;
-		        });
 		    } else {
 		        leaderboardHTML += `
 		            <tr>
