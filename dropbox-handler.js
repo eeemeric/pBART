@@ -10,9 +10,9 @@ class DropboxHandler {
         const path = `/Apps/pBART_data/${filename}`;
         
         try {
-            console.log('DEBUG: Attempting to save:', filename);
-            console.log('DEBUG: Path:', path);
-            console.log('DEBUG: Data:', sessionData);
+            //console.log('DEBUG: Attempting to save:', filename);
+            //console.log('DEBUG: Path:', path);
+            //console.log('DEBUG: Data:', sessionData);
             
             const response = await fetch('https://content.dropboxapi.com/2/files/upload', {
                 method: 'POST',
@@ -28,14 +28,14 @@ class DropboxHandler {
                 body: JSON.stringify(sessionData)
             });
             
-            console.log('DEBUG: Response status:', response.status);
-            console.log('DEBUG: Response ok:', response.ok);
+            //console.log('DEBUG: Response status:', response.status);
+            //console.log('DEBUG: Response ok:', response.ok);
             
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error('DEBUG: Dropbox error response:', errorText);
             } else {
-                console.log('DEBUG: Successfully saved to Dropbox!');
+                //console.log('DEBUG: Successfully saved to Dropbox!');
             }
         } catch (error) {
             console.error('DEBUG: Catch error:', error);
