@@ -1,102 +1,102 @@
 // pBART - Balloon Analogue Risk Task (DOM-based version)
 
 const GameState = {
-    WELCOME: 'WELCOME',
-    USERNAME_INPUT: 'USERNAME_INPUT',
-    WAITING_FOR_CHOICE: 'WAITING_FOR_CHOICE',
-    REVEALING_OUTCOME: 'REVEALING_OUTCOME',
-    WIN: 'WIN',
-    BUST: 'BUST',
-    INTER_SEQUENCE_DELAY: 'INTER_SEQUENCE_DELAY'
+	WELCOME: 'WELCOME',
+	USERNAME_INPUT: 'USERNAME_INPUT',
+	WAITING_FOR_CHOICE: 'WAITING_FOR_CHOICE',
+	REVEALING_OUTCOME: 'REVEALING_OUTCOME',
+	WIN: 'WIN',
+	BUST: 'BUST',
+	INTER_SEQUENCE_DELAY: 'INTER_SEQUENCE_DELAY'
 };
 
 class Trial {
-    constructor() {
-        this.sequence_number = 0;
-        this.trial_number = 0;
-        this.choice = null;
-        this.tokens_this_hit = 0;
-        this.earned_tokens = 0;
-        this.sequence_total = 0;
-        this.result = 'CONTINUE';
-        this.total_accumulated = 0;
-        this.reaction_time_ms = 0;
-    }
+	constructor() {
+		this.sequence_number = 0;
+		this.trial_number = 0;
+		this.choice = null;
+		this.tokens_this_hit = 0;
+		this.earned_tokens = 0;
+		this.sequence_total = 0;
+		this.result = 'CONTINUE';
+		this.total_accumulated = 0;
+		this.reaction_time_ms = 0;
+	}
 }
 
 class pBART {
-    constructor() {
-        // Create HTML structure
-        this.createUI();
-        
-        this.game_state = GameState.WELCOME;
-        this.timer = 0;
-        this.choice_onset_frame = 0;
-        this.sequence_number = 0;
-        this.trial = new Trial();
-        this.total_accumulated_tokens = 0;
-        this.subject_id = '';
-        this.username_input = '';
-        this.max_sequences = 10;
-        this.session_complete = false;
-        this.trial_history = [];
-        
-        this.token_weights = [1, 1, 1, 1, 1, 1, 1, 1, 1, 4];
-        this.dropbox = new DropboxHandler('sl.u.AGZ4BAJoqJlRSE7rGvX4gPlOEuoWAaO92OsLxiVTzWy-X2WSVXlJF7QC-PlXFt2VGal-Wr9sip2b2nVWLzqS5GYywwJYC5Et7pH2W-6gfqQYZOluqchUSYXaaxpBSAXYheCYfhCw7FPhwMok601sDcEdy0nxcSywTyu8EZGPrqtG6991L0Po9Fo7XAeuzCFXJsqTlziEXQqt-qIseA72zbZb1zY7HSYjJg49VkXBoVXZOvLwBf36vUoDqnmEBp2XDgma6YYQAirFNxG0xYYLsvBejIMiueOAyR9JB6HkLsVnps7a2XLTzU8Kpg7gFx3-Hg1vdoBLIvdnuKYDKZYb6tB48Stp84QhhF9tR1UjgXgv4OewWyvId4BIGcdbj19BuAWLPV6v5rz0CHN4Z2tctUQIqgp4ftnwqStu1Ic2BvY1Yx9limvW_YsTZUfC7s86CKMMUy9IlwUlJCow0RSj83C-9x9l4cme_JpdCbcHOEMMC37z7Nk5hQjfmNqGGj-ysodeuyZdcuZzgXdcmM5PTt9SOiTSyQJ_TG9eSgb1lRauXSvre3Lw_b_pW1bFjvj03EKUOSjONKxzUpOaGuSDtyz726lV4eblHSLKgGFum1q0GChA0XRJzat3JoxkQDkHCuJTW6D3cnyLxmeiZAMUlMS4ZwWoExhMsRFKnDbWzsRzLV7qaooHOr1ez9TkSpoO_0wjpZyEemawHqgf4UIUuvspRuTegL9GDasz3swk6UGfYDk7cKlmvMpJcHNFcrqV4YjR0ErZja6oXnRWkkPDyCuj6iEjb6TB6sUAWSX3nPB8XGwezWSMOHSHWcpl5CW1gnGGACvHZGu4S4O3B3h7O5s9UBNqP-l7VXdvVpR9XUEYGKY9x-j-5QxA2s6F317JpsX-iGmIoCfARQmrtdwd01D2hQgFyAVOf8tCqc2k3yLtUI9ng6sZYGHU0Y4C5hLA6lDjioyyjSv_QjdNaNzoPlJHr4Yrb2K6LVCBtW2ppm_ypiMizbOsdRA2BVH-ZgExPzzEKZpeseqaHFVJ2RRpbpi5ht9ZuA8MoWub7ti83C9MMKyaRvWIFtplVNLDwNR3xryg3qLGIkt2X1VmfOe_mCcEqAesBi9CeRXvMVNcv9pJW4Ov8KV9avrl-a0kLfRsB90f6so_esS6cKctW3qC7MV-vioyN4EmFv1XOCBwPuBnN5z473m6qNAX2nd3Bj1K16tUQIAyKkk8QgcGWoBPxrLGOKQviqsT3GMpp9tCll4BXPgiaTP-C-WiNcuF-kL2YPRjqSSqAHCQLOmbL8B9e2KK');        
-        document.addEventListener('keydown', (e) => this.handleKeydown(e));
-        this.gameLoop();
-    }
+	constructor() {
+		// Create HTML structure
+		this.createUI();
+
+		this.game_state = GameState.WELCOME;
+		this.timer = 0;
+		this.choice_onset_frame = 0;
+		this.sequence_number = 0;
+		this.trial = new Trial();
+		this.total_accumulated_tokens = 0;
+		this.subject_id = '';
+		this.username_input = '';
+		this.max_sequences = 10;
+		this.session_complete = false;
+		this.trial_history = [];
+
+		this.token_weights = [1, 1, 1, 1, 1, 1, 1, 1, 1, 4];
+		this.dropbox = new DropboxHandler('sl.u.AGZ4BAJoqJlRSE7rGvX4gPlOEuoWAaO92OsLxiVTzWy-X2WSVXlJF7QC-PlXFt2VGal-Wr9sip2b2nVWLzqS5GYywwJYC5Et7pH2W-6gfqQYZOluqchUSYXaaxpBSAXYheCYfhCw7FPhwMok601sDcEdy0nxcSywTyu8EZGPrqtG6991L0Po9Fo7XAeuzCFXJsqTlziEXQqt-qIseA72zbZb1zY7HSYjJg49VkXBoVXZOvLwBf36vUoDqnmEBp2XDgma6YYQAirFNxG0xYYLsvBejIMiueOAyR9JB6HkLsVnps7a2XLTzU8Kpg7gFx3-Hg1vdoBLIvdnuKYDKZYb6tB48Stp84QhhF9tR1UjgXgv4OewWyvId4BIGcdbj19BuAWLPV6v5rz0CHN4Z2tctUQIqgp4ftnwqStu1Ic2BvY1Yx9limvW_YsTZUfC7s86CKMMUy9IlwUlJCow0RSj83C-9x9l4cme_JpdCbcHOEMMC37z7Nk5hQjfmNqGGj-ysodeuyZdcuZzgXdcmM5PTt9SOiTSyQJ_TG9eSgb1lRauXSvre3Lw_b_pW1bFjvj03EKUOSjONKxzUpOaGuSDtyz726lV4eblHSLKgGFum1q0GChA0XRJzat3JoxkQDkHCuJTW6D3cnyLxmeiZAMUlMS4ZwWoExhMsRFKnDbWzsRzLV7qaooHOr1ez9TkSpoO_0wjpZyEemawHqgf4UIUuvspRuTegL9GDasz3swk6UGfYDk7cKlmvMpJcHNFcrqV4YjR0ErZja6oXnRWkkPDyCuj6iEjb6TB6sUAWSX3nPB8XGwezWSMOHSHWcpl5CW1gnGGACvHZGu4S4O3B3h7O5s9UBNqP-l7VXdvVpR9XUEYGKY9x-j-5QxA2s6F317JpsX-iGmIoCfARQmrtdwd01D2hQgFyAVOf8tCqc2k3yLtUI9ng6sZYGHU0Y4C5hLA6lDjioyyjSv_QjdNaNzoPlJHr4Yrb2K6LVCBtW2ppm_ypiMizbOsdRA2BVH-ZgExPzzEKZpeseqaHFVJ2RRpbpi5ht9ZuA8MoWub7ti83C9MMKyaRvWIFtplVNLDwNR3xryg3qLGIkt2X1VmfOe_mCcEqAesBi9CeRXvMVNcv9pJW4Ov8KV9avrl-a0kLfRsB90f6so_esS6cKctW3qC7MV-vioyN4EmFv1XOCBwPuBnN5z473m6qNAX2nd3Bj1K16tUQIAyKkk8QgcGWoBPxrLGOKQviqsT3GMpp9tCll4BXPgiaTP-C-WiNcuF-kL2YPRjqSSqAHCQLOmbL8B9e2KK');
+		document.addEventListener('keydown', (e) => this.handleKeydown(e));
+		this.gameLoop();
+	}
 
 	async checkUsernameExists(username) {
-	    try {
-	        const files = await this.dropbox.listSessionFiles();
-	        // Check if any file starts with this username
-	        const exists = files.some(file => file.name.startsWith(`pbart_session_${username}_`));
-	        return exists;
-	    } catch (error) {
-	        console.error('Error checking username:', error);
-	        return false;
-	    }
+		try {
+			const files = await this.dropbox.listSessionFiles();
+			// Check if any file starts with this username
+			const exists = files.some(file => file.name.startsWith(`pbart_session_${username}_`));
+			return exists;
+		} catch (error) {
+			console.error('Error checking username:', error);
+			return false;
+		}
 	}
-	
-    createUI() {
-        // Remove canvas, add divs instead
-        const container = document.body;
-        container.innerHTML = `
+
+	createUI() {
+		// Remove canvas, add divs instead
+		const container = document.body;
+		container.innerHTML = `
             <div id="app" style="width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; background-color: #d3d3d3; font-family: Arial, sans-serif;">
                 <div id="content" style="text-align: center; width: 90%; max-width: 800px;"></div>
             </div>
         `;
-    }
-    
-    async handleKeydown(e) {
-	    if (this.game_state === GameState.WELCOME) {
-	        if (e.key === ' ') {
-	            e.preventDefault();
-	            this.game_state = GameState.USERNAME_INPUT;
-	        }
-	    } else if (this.game_state === GameState.USERNAME_INPUT) {
-	        if (e.key === 'Enter') {
-	            e.preventDefault();
-	            if (this.username_input.length > 0) {
-	                // Check if username exists
-	                const exists = await this.checkUsernameExists(this.username_input);
-	                if (exists) {
-	                    this.show_username_error = true;
-	                    this.error_timer = 0;
-	                    this.username_input = '';
-	                } else {
-	                    this.subject_id = this.username_input;
-	                    this.reset_sequence();
-	                }
-	            }
-	        } else if (e.key === 'Backspace') {
-	            e.preventDefault();
-	            this.username_input = this.username_input.slice(0, -1);
-	        } else if (e.key.length === 1 && this.username_input.length < 20) {
-	            this.username_input += e.key;
-	        }
-        } else if (this.game_state === GameState.WAITING_FOR_CHOICE) {
+	}
+
+	async handleKeydown(e) {
+		if (this.game_state === GameState.WELCOME) {
+			if (e.key === ' ') {
+				e.preventDefault();
+				this.game_state = GameState.USERNAME_INPUT;
+			}
+		} else if (this.game_state === GameState.USERNAME_INPUT) {
+			if (e.key === 'Enter') {
+				e.preventDefault();
+				if (this.username_input.length > 0) {
+					// Check if username exists
+					const exists = await this.checkUsernameExists(this.username_input);
+					if (exists) {
+						this.show_username_error = true;
+						this.error_timer = 0;
+						this.username_input = '';
+					} else {
+						this.subject_id = this.username_input;
+						this.reset_sequence();
+					}
+				}
+			} else if (e.key === 'Backspace') {
+				e.preventDefault();
+				this.username_input = this.username_input.slice(0, -1);
+			} else if (e.key.length === 1 && this.username_input.length < 20) {
+				this.username_input += e.key;
+			}
+		} else if (this.game_state === GameState.WAITING_FOR_CHOICE) {
 			if (e.key === 'ArrowLeft') {
 				e.preventDefault();
 				if (this.trial.hit_on_left) {
@@ -112,114 +112,114 @@ class pBART {
 					this.handle_hit();
 				}
 			}
-        } else if ([GameState.WIN, GameState.BUST].includes(this.game_state)) {
-            if (e.key === ' ') {
-                e.preventDefault();
-                this.game_state = GameState.INTER_SEQUENCE_DELAY;
-                this.timer = 0;
-            }
-        }
-    }
-    
-    handle_hit() {
-        this.trial.choice = 'HIT';
-        this.trial.tokens_this_hit = this.weighted_random(1, 11);
-        const frames_elapsed = this.timer - this.choice_onset_frame;
-        this.trial.reaction_time_ms = (frames_elapsed / 60.0) * 1000;
-        this.game_state = GameState.REVEALING_OUTCOME;
-        this.timer = 0;
-    }
-    
-    handle_stay() {
-        this.trial.choice = 'STAY';
-        const frames_elapsed = this.timer - this.choice_onset_frame;
-        this.trial.reaction_time_ms = (frames_elapsed / 60.0) * 1000;
-        this.trial.result = 'WIN';
-        this.total_accumulated_tokens += this.trial.earned_tokens;
-        this.trial.total_accumulated = this.total_accumulated_tokens;
-        this.save_trial();
-        this.game_state = GameState.WIN;
-    }
-    
-    weighted_random(min, max) {
-        let sum = this.token_weights.reduce((a, b) => a + b, 0);
-        let random = Math.random() * sum;
-        for (let i = 0; i < this.token_weights.length; i++) {
-            random -= this.token_weights[i];
-            if (random <= 0) return min + i;
-        }
-        return max - 1;
-    }
-    
-    reset_sequence() {
-        this.sequence_number += 1;
-        if (this.sequence_number >= this.max_sequences) {
-            this.session_complete = true;
-            this.game_state = GameState.WIN;
-            this.save_session();
-            return;
-        }
-        this.trial = new Trial();
-        this.trial.sequence_number = this.sequence_number;
-        this.trial.trial_number = 0;
-        this.trial.earned_tokens = 0;
-        this.trial.sequence_total = 0;
-        this.game_state = GameState.WAITING_FOR_CHOICE;
-        this.timer = 0;
-        this.choice_onset_frame = this.timer;
-    }
-    
-    save_trial() {
-        this.trial.timestamp = new Date().toISOString();
-        this.trial_history.push({...this.trial});
-    }
-    
-    save_session() {
-	    console.log('DEBUG: save_session() called!');
-	    const sessionData = {
-	        subject_id: this.subject_id,
-	        total_tokens_accumulated: this.total_accumulated_tokens,
-	        total_sequences: this.sequence_number,
-	        trials: this.trial_history
-	    };
-	    console.log('DEBUG: Calling dropbox.saveSessionData()');
-	    this.dropbox.saveSessionData(sessionData);
+		} else if ([GameState.WIN, GameState.BUST].includes(this.game_state)) {
+			if (e.key === ' ') {
+				e.preventDefault();
+				this.game_state = GameState.INTER_SEQUENCE_DELAY;
+				this.timer = 0;
+			}
+		}
 	}
-    
-    update() {
-        this.timer += 1;
-        
-        if (this.game_state === GameState.REVEALING_OUTCOME) {
-            if (this.timer >= 60) {
-                this.trial.earned_tokens += this.trial.tokens_this_hit;
-                this.trial.sequence_total += this.trial.tokens_this_hit;
-                
-                if (this.trial.sequence_total > 20) {
-                    this.trial.result = 'BUST';
-                    this.total_accumulated_tokens = 0;
-                    this.trial.total_accumulated = 0;
-                    this.save_trial();
-                    this.game_state = GameState.BUST;
-                } else {
-                    this.game_state = GameState.WAITING_FOR_CHOICE;
-                    this.trial.trial_number += 1;
-                    this.choice_onset_frame = this.timer;
-                }
-                this.timer = 0;
-            }
-        } else if (this.game_state === GameState.INTER_SEQUENCE_DELAY) {
-            if (this.timer >= 60) {
-                this.reset_sequence();
-                this.timer = 0;
-            }
-        }
-    }
-    
-    draw() {
-        const content = document.getElementById('content');
-        
-        if (this.game_state === GameState.WELCOME) {
-		    content.innerHTML = `
+
+	handle_hit() {
+		this.trial.choice = 'HIT';
+		this.trial.tokens_this_hit = this.weighted_random(1, 11);
+		const frames_elapsed = this.timer - this.choice_onset_frame;
+		this.trial.reaction_time_ms = (frames_elapsed / 60.0) * 1000;
+		this.game_state = GameState.REVEALING_OUTCOME;
+		this.timer = 0;
+	}
+
+	handle_stay() {
+		this.trial.choice = 'STAY';
+		const frames_elapsed = this.timer - this.choice_onset_frame;
+		this.trial.reaction_time_ms = (frames_elapsed / 60.0) * 1000;
+		this.trial.result = 'WIN';
+		this.total_accumulated_tokens += this.trial.earned_tokens;
+		this.trial.total_accumulated = this.total_accumulated_tokens;
+		this.save_trial();
+		this.game_state = GameState.WIN;
+	}
+
+	weighted_random(min, max) {
+		let sum = this.token_weights.reduce((a, b) => a + b, 0);
+		let random = Math.random() * sum;
+		for (let i = 0; i < this.token_weights.length; i++) {
+			random -= this.token_weights[i];
+			if (random <= 0) return min + i;
+		}
+		return max - 1;
+	}
+
+	reset_sequence() {
+		this.sequence_number += 1;
+		if (this.sequence_number >= this.max_sequences) {
+			this.session_complete = true;
+			this.game_state = GameState.WIN;
+			this.save_session();
+			return;
+		}
+		this.trial = new Trial();
+		this.trial.sequence_number = this.sequence_number;
+		this.trial.trial_number = 0;
+		this.trial.earned_tokens = 0;
+		this.trial.sequence_total = 0;
+		this.game_state = GameState.WAITING_FOR_CHOICE;
+		this.timer = 0;
+		this.choice_onset_frame = this.timer;
+	}
+
+	save_trial() {
+		this.trial.timestamp = new Date().toISOString();
+		this.trial_history.push({ ...this.trial });
+	}
+
+	save_session() {
+		console.log('DEBUG: save_session() called!');
+		const sessionData = {
+			subject_id: this.subject_id,
+			total_tokens_accumulated: this.total_accumulated_tokens,
+			total_sequences: this.sequence_number,
+			trials: this.trial_history
+		};
+		console.log('DEBUG: Calling dropbox.saveSessionData()');
+		this.dropbox.saveSessionData(sessionData);
+	}
+
+	update() {
+		this.timer += 1;
+
+		if (this.game_state === GameState.REVEALING_OUTCOME) {
+			if (this.timer >= 60) {
+				this.trial.earned_tokens += this.trial.tokens_this_hit;
+				this.trial.sequence_total += this.trial.tokens_this_hit;
+
+				if (this.trial.sequence_total > 20) {
+					this.trial.result = 'BUST';
+					this.total_accumulated_tokens = 0;
+					this.trial.total_accumulated = 0;
+					this.save_trial();
+					this.game_state = GameState.BUST;
+				} else {
+					this.game_state = GameState.WAITING_FOR_CHOICE;
+					this.trial.trial_number += 1;
+					this.choice_onset_frame = this.timer;
+				}
+				this.timer = 0;
+			}
+		} else if (this.game_state === GameState.INTER_SEQUENCE_DELAY) {
+			if (this.timer >= 60) {
+				this.reset_sequence();
+				this.timer = 0;
+			}
+		}
+	}
+
+	draw() {
+		const content = document.getElementById('content');
+
+		if (this.game_state === GameState.WELCOME) {
+			content.innerHTML = `
 		        <h1 style="font-size: 56px; margin-bottom: 30px;">🎮 Balloon Analogue Risk Task</h1>
 		        
 		        <div style="max-width: 600px; text-align: left; font-size: 22px; line-height: 1.8; margin: 30px auto;">
@@ -242,45 +242,35 @@ class pBART {
 		        </div>
 		        
 		        <p style="font-size: 28px; margin-top: 30px;">Press SPACE to begin</p>
-		    `;		
-        } else if (this.game_state === GameState.USERNAME_INPUT) {
-		    if (e.key === 'Enter') {
-		        e.preventDefault();
-		        if (this.username_input.length > 0) {
-		            this.subject_id = this.username_input;
-		            this.reset_sequence();
-		        }
-		    } else if (e.key === 'Backspace') {
-		        e.preventDefault();
-		        this.username_input = this.username_input.slice(0, -1);
-		    } else if (e.key.length === 1 && this.username_input.length < 20) {
-		        this.username_input += e.key;
-		    }
-		}
-		    
-		    content.innerHTML = `
-		        <h1 style="font-size: 36px; margin-bottom: 50px;">Enter Username</h1>
-		        ${errorMsg}
-		        <div style="font-size: 24px; margin-bottom: 30px; padding: 20px; border: 2px solid black; min-height: 40px;">
-		            ${this.username_input}
-		        </div>
-		        <p style="font-size: 16px; color: #666;">Type your username and press ENTER</p>
 		    `;
-        } else if (this.game_state === GameState.WAITING_FOR_CHOICE) {
+		} else if (this.game_state === GameState.USERNAME_INPUT) {
+			if (e.key === 'Enter') {
+				e.preventDefault();
+				if (this.username_input.length > 0) {
+					this.subject_id = this.username_input;
+					this.reset_sequence();
+				}
+			} else if (e.key === 'Backspace') {
+				e.preventDefault();
+				this.username_input = this.username_input.slice(0, -1);
+			} else if (e.key.length === 1 && this.username_input.length < 20) {
+				this.username_input += e.key;
+			}
+		} else if (this.game_state === GameState.WAITING_FOR_CHOICE) {
 			// Randomize positions each trial
 			if (!this.trial.positions_set) {
 				this.trial.hit_on_left = Math.random() > 0.5;
 				this.trial.positions_set = true;
 			}
-			
+
 			const hitColor = '#87CEEB';
 			const stayColor = '#ffffff';
-			
+
 			const leftButton = this.trial.hit_on_left ? 'HIT' : 'STAY';
 			const rightButton = this.trial.hit_on_left ? 'STAY' : 'HIT';
 			const leftColor = this.trial.hit_on_left ? hitColor : stayColor;
 			const rightColor = this.trial.hit_on_left ? stayColor : hitColor;
-			
+
 			content.innerHTML = `
 				<div style="font-size: 14px; margin-bottom: 30px; text-align: left;">
 					<div>Sequence: ${this.sequence_number}/${this.max_sequences}</div>
@@ -314,13 +304,13 @@ class pBART {
 					</div>
 				</div>
 			`;
-        } else if (this.game_state === GameState.REVEALING_OUTCOME) {
+		} else if (this.game_state === GameState.REVEALING_OUTCOME) {
 			const tokenColors = ['#FF6B6B', '#FF8E72', '#FFA500', '#FFD700', '#90EE90', '#87CEEB', '#6495ED', '#9370DB', '#FF1493', '#FFB6C1'];
 			const revealedColor = tokenColors[this.trial.tokens_this_hit - 1] || '#888888';
-			
+
 			// Show colored circle where the HIT button was
 			const hitPosition = this.trial.hit_on_left ? 'left' : 'right';
-			
+
 			content.innerHTML = `
 				<div style="font-size: 14px; margin-bottom: 30px; text-align: left;">
 					<div>Sequence: ${this.sequence_number}/${this.max_sequences}</div>
@@ -359,7 +349,7 @@ class pBART {
 					`}
 				</div>
 			`;
-       } else if (this.game_state === GameState.WIN) {
+		} else if (this.game_state === GameState.WIN) {
 			if (this.session_complete) {
 				content.innerHTML = `
 					<h1 style="font-size: 48px; color: green; margin-bottom: 30px;">Session Complete!</h1>
@@ -415,7 +405,7 @@ class pBART {
 			// Calculate overage (tokens beyond 20)
 			const overage = this.trial.sequence_total - 20;
 			const overage_percentage = Math.min(overage / 20, 1.0); // Cap at 100% for display
-			
+
 			content.innerHTML = `
 				<h1 style="font-size: 48px; color: red; margin-bottom: 30px;">BUST!</h1>
 				
@@ -440,15 +430,15 @@ class pBART {
 				<p style="font-size: 18px; margin-top: 20px;">Press SPACE to continue</p>
 			`;
 		}
-    }
-    
-    gameLoop() {
-        this.update();
-        this.draw();
-        requestAnimationFrame(() => this.gameLoop());
-    }
+	}
+
+	gameLoop() {
+		this.update();
+		this.draw();
+		requestAnimationFrame(() => this.gameLoop());
+	}
 }
 
 window.addEventListener('load', () => {
-    new pBART();
+	new pBART();
 });
