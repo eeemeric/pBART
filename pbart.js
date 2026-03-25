@@ -70,6 +70,14 @@ class pBART {
         `;
 	}
 
+
+	async showLeaderboard() {
+	    // Don't call listSessionFiles - it has CORS issues from browser
+	    this.leaderboard_data = [];
+	    this.game_state = GameState.LEADERBOARD;
+	    this.timer = 0;
+	}
+	
 	async handleKeydown(e) {
 		if (this.game_state === GameState.WELCOME) {
 		    if (e.key === ' ') {
