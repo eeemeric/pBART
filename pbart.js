@@ -79,7 +79,6 @@ class pBART {
 		        e.preventDefault();
 		        this.showLeaderboard();
 		    }
-		}
 		} else if (this.game_state === GameState.USERNAME_INPUT) {
 			if (e.key === 'Enter') {
 				e.preventDefault();
