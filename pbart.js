@@ -269,7 +269,7 @@ class pBART {
 		            </ul>
 		        </div>
 		        
-		        <p style="font-size: 28px; margin-top: 30px;">Press SPACE to begin</p>
+		        <p style="font-size: 28px; margin-top: 30px;">Press SPACE to begin or L to see the leaderboard.</p>
 		    `;
 		} else if (this.game_state === GameState.USERNAME_INPUT) {
 		    content.innerHTML = `
