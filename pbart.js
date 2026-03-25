@@ -1,5 +1,5 @@
 // pBART - Balloon Analogue Risk Task (DOM-based version)
-
+// Production ready - pBART web app complete
 const GameState = {
 	WELCOME: 'WELCOME',
 	USERNAME_INPUT: 'USERNAME_INPUT',
