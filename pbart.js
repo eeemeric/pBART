@@ -72,10 +72,17 @@ class pBART {
 
 
 	async showLeaderboard() {
-	    // Don't call listSessionFiles - it has CORS issues from browser
-	    this.leaderboard_data = [];
-	    this.game_state = GameState.LEADERBOARD;
-	    this.timer = 0;
+	    try {
+	        const response = await fetch('https://eeemeric.pythonanywhere.com/api/leaderboard');
+	        const data = await response.json();
+	        this.leaderboard_data = data;
+	        this.game_state = GameState.LEADERBOARD;
+	        this.timer = 0;
+	    } catch (error) {
+	        console.error('Error loading leaderboard:', error);
+	        this.leaderboard_data = [];
+	        this.game_state = GameState.LEADERBOARD;
+	    }
 	}
 	
 	async handleKeydown(e) {
@@ -459,26 +466,49 @@ class pBART {
 				<p style="font-size: 18px; margin-top: 20px;">Press SPACE to continue</p>
 			`;
 		} else if (this.game_state === GameState.LEADERBOARD) {
-		    content.innerHTML = `
+		    let leaderboardHTML = `
 		        <h1 style="font-size: 48px; margin-bottom: 40px;">🏆 Leaderboard</h1>
 		        
-		        <div style="max-width: 700px; margin: 0 auto; padding: 30px; background-color: #f9f9f9; border-radius: 10px;">
-		            <p style="font-size: 20px; margin-bottom: 20px;">📊 Live leaderboard coming soon!</p>
-		            
-		            <p style="font-size: 18px; margin: 20px 0;">For now, all session data is automatically saved to:</p>
-		            <p style="font-family: monospace; background-color: #eee; padding: 15px; margin: 20px 0; border-radius: 5px; font-size: 16px;">
-		                Dropbox → Apps → pBART_data
-		            </p>
-		            
-		            <p style="font-size: 16px; color: #666; margin-top: 30px;">
-		                All participant data securely backed up
-		            </p>
-		        </div>
+		        <table style="width: 100%; max-width: 700px; margin: 0 auto; border-collapse: collapse; font-size: 18px;">
+		            <thead>
+		                <tr style="background-color: #007bff; color: white;">
+		                    <th style="padding: 15px; text-align: left; border: 2px solid #333;">Rank</th>
+		                    <th style="padding: 15px; text-align: left; border: 2px solid #333;">Player</th>
+		                    <th style="padding: 15px; text-align: center; border: 2px solid #333;">Tokens</th>
+		                    <th style="padding: 15px; text-align: center; border: 2px solid #333;">Risk Index</th>
+		                </tr>
+		            </thead>
+		            <tbody>
+		    `;
+		    
+		    if (this.leaderboard_data && this.leaderboard_data.length > 0) {
+		        this.leaderboard_data.forEach((entry, index) => {
+		            leaderboardHTML += `
+		                <tr style="background-color: ${index % 2 === 0 ? '#f9f9f9' : 'white'};">
+		                    <td style="padding: 15px; border: 1px solid #ddd;">${index + 1}</td>
+		                    <td style="padding: 15px; border: 1px solid #ddd;">${entry.subject_id}</td>
+		                    <td style="padding: 15px; text-align: center; border: 1px solid #ddd;">${entry.total_tokens}</td>
+		                    <td style="padding: 15px; text-align: center; border: 1px solid #ddd;">${entry.risk_index}</td>
+		                </tr>
+		            `;
+		        });
+		    } else {
+		        leaderboardHTML += `
+		            <tr>
+		                <td colspan="4" style="padding: 20px; text-align: center;">Loading...</td>
+		            </tr>
+		        `;
+		    }
+		    
+		    leaderboardHTML += `
+		            </tbody>
+		        </table>
 		        
 		        <p style="font-size: 18px; margin-top: 40px; color: #666;">Press ESC to go back</p>
 		    `;
-		}																						
-	}
+		    
+		    content.innerHTML = leaderboardHTML;
+		}
 
 	gameLoop() {
 	    //console.log('Loop tick, state:', this.game_state);
