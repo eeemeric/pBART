@@ -128,6 +128,12 @@ class pBART {
 		        this.game_state = GameState.WELCOME;
 		    }
 		}
+		// ESC to return to welcome from any state
+		if (e.key === 'Escape') {
+		    e.preventDefault();
+		    this.game_state = GameState.WELCOME;
+		    this.timer = 0;
+		}
 	}
 
 	handle_hit() {
@@ -269,7 +275,7 @@ class pBART {
 		            </ul>
 		        </div>
 		        
-		        <p style="font-size: 28px; margin-top: 30px;">Press SPACE to begin or L to see the leaderboard.</p>
+		        <p style="font-size: 28px; margin-top: 30px;">Press SPACE to begin or L to see the leaderboard. Press esc to quit. ESC</p>
 		    `;
 		} else if (this.game_state === GameState.USERNAME_INPUT) {
 		    content.innerHTML = `
