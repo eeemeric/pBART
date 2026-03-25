@@ -244,18 +244,13 @@ class pBART {
 		        <p style="font-size: 28px; margin-top: 30px;">Press SPACE to begin</p>
 		    `;
 		} else if (this.game_state === GameState.USERNAME_INPUT) {
-			if (e.key === 'Enter') {
-				e.preventDefault();
-				if (this.username_input.length > 0) {
-					this.subject_id = this.username_input;
-					this.reset_sequence();
-				}
-			} else if (e.key === 'Backspace') {
-				e.preventDefault();
-				this.username_input = this.username_input.slice(0, -1);
-			} else if (e.key.length === 1 && this.username_input.length < 20) {
-				this.username_input += e.key;
-			}
+		    content.innerHTML = `
+		        <h1 style="font-size: 36px; margin-bottom: 50px;">Enter Username</h1>
+		        <div style="font-size: 24px; margin-bottom: 30px; padding: 20px; border: 2px solid black; min-height: 40px;">
+		            ${this.username_input}
+		        </div>
+		        <p style="font-size: 16px; color: #666;">Type your username and press ENTER</p>
+		    `;
 		} else if (this.game_state === GameState.WAITING_FOR_CHOICE) {
 			// Randomize positions each trial
 			if (!this.trial.positions_set) {
