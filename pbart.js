@@ -88,26 +88,18 @@ class pBART {
 		        this.showLeaderboard();
 		    }
 		} else if (this.game_state === GameState.USERNAME_INPUT) {
-			if (e.key === 'Enter') {
-				e.preventDefault();
-				if (this.username_input.length > 0) {
-					// Check if username exists
-					const exists = await this.checkUsernameExists(this.username_input);
-					if (exists) {
-						this.show_username_error = true;
-						this.error_timer = 0;
-						this.username_input = '';
-					} else {
-						this.subject_id = this.username_input;
-						this.reset_sequence();
-					}
-				}
-			} else if (e.key === 'Backspace') {
-				e.preventDefault();
-				this.username_input = this.username_input.slice(0, -1);
-			} else if (e.key.length === 1 && this.username_input.length < 20) {
-				this.username_input += e.key;
-			}
+		    if (e.key === 'Enter') {
+		        e.preventDefault();
+		        if (this.username_input.length > 0) {
+		            this.subject_id = this.username_input;
+		            this.reset_sequence();
+		        }
+		    } else if (e.key === 'Backspace') {
+		        e.preventDefault();
+		        this.username_input = this.username_input.slice(0, -1);
+		    } else if (e.key.length === 1 && this.username_input.length < 20) {
+		        this.username_input += e.key;
+		    }
 		} else if (this.game_state === GameState.WAITING_FOR_CHOICE) {
 			if (e.key === 'ArrowLeft') {
 				e.preventDefault();
