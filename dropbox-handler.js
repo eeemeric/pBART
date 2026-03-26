@@ -9,11 +9,7 @@ class DropboxHandler {
         const filename = `pbart_session_${sessionData.subject_id}_${timestamp}.json`;
         const path = `/Apps/pBART_data/${filename}`;
         
-        try {
-            //console.log('DEBUG: Attempting to save:', filename);
-            //console.log('DEBUG: Path:', path);
-            //console.log('DEBUG: Data:', sessionData);
-            
+        try {            
             const response = await fetch('https://content.dropboxapi.com/2/files/upload', {
                 method: 'POST',
                 headers: {
@@ -28,14 +24,11 @@ class DropboxHandler {
                 body: JSON.stringify(sessionData)
             });
             
-            //console.log('DEBUG: Response status:', response.status);
-            //console.log('DEBUG: Response ok:', response.ok);
-            
             if (!response.ok) {
                 const errorText = await response.text();
                 console.error('DEBUG: Dropbox error response:', errorText);
             } else {
-                //console.log('DEBUG: Successfully saved to Dropbox!');
+                console.log('DEBUG: Successfully saved to Dropbox!');
             }
         } catch (error) {
             console.error('DEBUG: Catch error:', error);
@@ -85,7 +78,7 @@ class DropboxHandler {
             });
             
             if (response.ok) {
-                console.log('Score saved to Dropbox!');
+                ('Score saved to Dropbox!');
             }
         } catch (error) {
             console.error('Error saving score:', error);
