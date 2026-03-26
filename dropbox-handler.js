@@ -63,4 +63,54 @@ class DropboxHandler {
             return [];
         }
     }
+
+    async appendToLeaderboard(scoreLine) {
+        const path = '/Apps/pBART_data/leaderboard.txt';
+        
+        try {
+            // First, try to download existing file
+            let existingContent = '';
+            try {
+                const downloadHeaders = {
+                    'Authorization': `Bearer ${this.accessToken}`,
+                    'Dropbox-API-Arg': JSON.stringify({path: path})
+                };
+                
+                const response = await fetch('https://content.dropboxapi.com/2/files/download', {
+                    method: 'POST',
+                    headers: downloadHeaders
+                });
+                
+                if (response.ok) {
+                    existingContent = await response.text();
+                }
+            } catch (e) {
+                // File doesn't exist yet, that's ok
+            }
+            
+            // Append new score
+            const newContent = existingContent + scoreLine;
+            
+            // Upload updated file
+            const uploadResponse = await fetch('https://content.dropboxapi.com/2/files/upload', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.accessToken}`,
+                    'Dropbox-API-Arg': JSON.stringify({
+                        path: path,
+                        mode: 'overwrite'
+                    }),
+                    'Content-Type': 'application/octet-stream'
+                },
+                body: newContent
+            });
+            
+            if (uploadResponse.ok) {
+                console.log('Score appended to leaderboard!');
+            }
+        } catch (error) {
+            console.error('Error appending to leaderboard:', error);
+        }
+    }
+    
 }
