@@ -224,7 +224,13 @@ class pBART {
 	        risk_index: riskIndex,
 	        trials: this.trial_history
 	    };
+	    
+	    // Save full session data
 	    this.dropbox.saveSessionData(sessionData);
+	    
+	    // Also save score line to leaderboard file
+	    const scoreLine = `${this.subject_id},${this.total_accumulated_tokens},${riskIndex}\n`;
+	    this.dropbox.appendToLeaderboard(scoreLine);
 	}
 
 	update() {
