@@ -58,6 +58,9 @@ class DropboxHandler {
     }
 
     async appendToLeaderboard(scoreLine) {
+        if (this.score_appended_this_session) return;  // ADD THIS
+        this.score_appended_this_session = true;
+    
         const path = `/Apps/pBART_data/pbart_leaderboard.txt`;
         
         try {
