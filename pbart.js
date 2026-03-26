@@ -170,14 +170,15 @@ class pBART {
 	}
 
 	reset_sequence() {
-		this.sequence_number += 1;
-		if (this.sequence_number >= this.max_sequences) {
-			this.session_already_saved = false;
-			this.session_complete = true;
-			this.game_state = GameState.WIN;
-			this.save_session();
-			return;
-		}
+	    this.sequence_number += 1;
+	    if (this.sequence_number >= this.max_sequences) {
+	        this.session_complete = true;
+	        this.game_state = GameState.WIN;
+	        this.save_session();
+	        return;
+	    }
+	    this.session_already_saved = false;  // Only reset for next sequence
+	    
 		this.trial = new Trial();
 		this.trial.sequence_number = this.sequence_number;
 		this.trial.trial_number = 0;
@@ -211,8 +212,7 @@ class pBART {
 	}
 
 	save_session() {
-	    if (this.session_already_saved) return;  // NEW: prevent double save
-	    this.session_already_saved = true;
+	    if (this.session_already_saved) return;
 	    
 	    const riskIndex = this.trial_stats && this.trial_stats.win_trials > 0 
 	        ? (this.trial_stats.hits_on_wins / this.trial_stats.win_trials).toFixed(2)
@@ -235,6 +235,8 @@ class pBART {
 	        total_tokens: this.total_accumulated_tokens,
 	        risk_index: riskIndex
 	    });
+	    
+	    this.session_already_saved = true;  // SET IT HERE at the end
 	}
 
 	update() {
