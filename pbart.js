@@ -519,7 +519,6 @@ class pBART {
 		}
 	}
 	gameLoop() {
-	    //console.log('Loop tick, state:', this.game_state);
 	    this.update();
 	    this.draw();
 	    requestAnimationFrame(() => this.gameLoop());
