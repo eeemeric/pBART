@@ -61,8 +61,9 @@ class DropboxHandler {
         const path = `/Apps/pBART_data/pbart_leaderboard.txt`;
         
         try {
-            // First download existing content
             let existingContent = '';
+            
+            // Try to download existing file
             try {
                 const downloadHeaders = {
                     'Authorization': `Bearer ${this.accessToken}`,
@@ -78,11 +79,14 @@ class DropboxHandler {
                     existingContent = await response.text();
                 }
             } catch (e) {
-                // File doesn't exist yet, that's ok
+                // File doesn't exist or other error - start fresh
             }
             
             // Append new score
             const newContent = existingContent + scoreLine;
+            
+            // Wait a bit before uploading to avoid rate limit
+            await new Promise(resolve => setTimeout(resolve, 1000));
             
             // Upload with overwrite
             const uploadResponse = await fetch('https://content.dropboxapi.com/2/files/upload', {
@@ -99,10 +103,10 @@ class DropboxHandler {
             });
             
             if (uploadResponse.ok) {
-                console.log('Score appended!');
+                console.log('Score saved!');
             }
         } catch (error) {
-            console.error('Error appending score:', error);
+            console.error('Error saving score:', error);
         }
     }
     
