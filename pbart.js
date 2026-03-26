@@ -130,6 +130,10 @@ class pBART {
 		// ESC to return to welcome from any state
 		if (e.key === 'Escape') {
 		    e.preventDefault();
+			// If in game, save partial session before returning
+		    if ([GameState.WAITING_FOR_CHOICE, GameState.REVEALING_OUTCOME, GameState.WIN, GameState.BUST].includes(this.game_state)) {
+		        this.save_partial_session();
+		    }
 		    this.game_state = GameState.WELCOME;
 		    this.timer = 0;
 		}
@@ -205,6 +209,7 @@ class pBART {
 	}
 
 	save_session() {
+		if (!this.session_complete) return; // Only save once
 	    const riskIndex = this.trial_stats && this.trial_stats.win_trials > 0 
 	        ? (this.trial_stats.hits_on_wins / this.trial_stats.win_trials).toFixed(2)
 	        : 0;
@@ -529,6 +534,32 @@ class pBART {
 	loadScoresLocally() {
 	    return JSON.parse(localStorage.getItem('pbart_leaderboard') || '[]');
 	}
+
+	save_partial_session() {
+	    const riskIndex = this.trial_stats && this.trial_stats.win_trials > 0 
+	        ? (this.trial_stats.hits_on_wins / this.trial_stats.win_trials).toFixed(2)
+	        : 0;
+	    
+	    const sessionData = {
+	        subject_id: this.subject_id,
+	        total_tokens_accumulated: this.total_accumulated_tokens,
+	        total_sequences: this.sequence_number,
+	        risk_index: riskIndex,
+	        quit_early: true,  // Flag for partial session
+	        trials: this.trial_history
+	    };
+	    
+	    // Save to Dropbox
+	    this.dropbox.saveSessionData(sessionData);
+	    
+	    // Save score to localStorage
+	    this.saveScoreLocally({
+	        subject_id: this.subject_id,
+	        total_tokens: this.total_accumulated_tokens,
+	        risk_index: riskIndex
+	    });
+	}
+	
 }
 
 window.addEventListener('load', () => {
