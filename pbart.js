@@ -532,9 +532,17 @@ class pBART {
 
 	saveScoreLocally(score) {
 	    let leaderboard = JSON.parse(localStorage.getItem('pbart_leaderboard') || '[]');
+	    
+	    const exists = leaderboard.some(entry => 
+	        entry.subject_id === score.subject_id && 
+	        entry.total_tokens === score.total_tokens
+	    );
+	    
+	    if (exists) return;
+	    
 	    leaderboard.push(score);
 	    leaderboard.sort((a, b) => b.total_tokens - a.total_tokens);
-	    leaderboard = leaderboard.slice(0, 10); // Keep top 10
+	    leaderboard = leaderboard.slice(0, 10);
 	    localStorage.setItem('pbart_leaderboard', JSON.stringify(leaderboard));
 	}
 	
@@ -543,6 +551,9 @@ class pBART {
 	}
 
 	save_partial_session() {
+		if (this.session_already_saved) return;  // ADD THIS
+	    this.session_already_saved = true;
+		
 	    const riskIndex = this.trial_stats && this.trial_stats.win_trials > 0 
 	        ? (this.trial_stats.hits_on_wins / this.trial_stats.win_trials).toFixed(2)
 	        : 0;
