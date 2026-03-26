@@ -58,30 +58,51 @@ class DropboxHandler {
     }
 
     async appendToLeaderboard(scoreLine) {
-        const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
-        const filename = `pbart_leaderboard_${timestamp}.txt`;
-        const path = `/Apps/pBART_data/${filename}`;
+        const path = `/Apps/pBART_data/pbart_leaderboard.txt`;
         
         try {
-            const response = await fetch('https://content.dropboxapi.com/2/files/upload', {
+            // First download existing content
+            let existingContent = '';
+            try {
+                const downloadHeaders = {
+                    'Authorization': `Bearer ${this.accessToken}`,
+                    'Dropbox-API-Arg': JSON.stringify({path: path})
+                };
+                
+                const response = await fetch('https://content.dropboxapi.com/2/files/download', {
+                    method: 'POST',
+                    headers: downloadHeaders
+                });
+                
+                if (response.ok) {
+                    existingContent = await response.text();
+                }
+            } catch (e) {
+                // File doesn't exist yet, that's ok
+            }
+            
+            // Append new score
+            const newContent = existingContent + scoreLine;
+            
+            // Upload with overwrite
+            const uploadResponse = await fetch('https://content.dropboxapi.com/2/files/upload', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${this.accessToken}`,
                     'Dropbox-API-Arg': JSON.stringify({
                         path: path,
-                        mode: 'add',
-                        autorename: true
+                        mode: 'overwrite'
                     }),
                     'Content-Type': 'application/octet-stream'
                 },
-                body: scoreLine
+                body: newContent
             });
             
-            if (response.ok) {
-                ('Score saved to Dropbox!');
+            if (uploadResponse.ok) {
+                console.log('Score appended!');
             }
         } catch (error) {
-            console.error('Error saving score:', error);
+            console.error('Error appending score:', error);
         }
     }
     
