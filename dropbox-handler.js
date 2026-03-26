@@ -64,7 +64,7 @@ class DropboxHandler {
         }
     }
 
-    async appendToLeaderboard(scoreLine) {async appendToLeaderboard(scoreLine) {
+    async appendToLeaderboard(scoreLine) {
         const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
         const filename = `pbart_leaderboard_${timestamp}.txt`;
         const path = `/Apps/pBART_data/${filename}`;
