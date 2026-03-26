@@ -58,9 +58,6 @@ class DropboxHandler {
     }
 
     async appendToLeaderboard(scoreLine) {
-        if (this.score_appended_this_session) return;  // ADD THIS
-        this.score_appended_this_session = true;
-    
         const path = `/Apps/pBART_data/pbart_leaderboard.txt`;
         
         try {
@@ -82,16 +79,22 @@ class DropboxHandler {
                     existingContent = await response.text();
                 }
             } catch (e) {
-                // File doesn't exist or other error - start fresh
+                // File doesn't exist yet
+            }
+            
+            // Check if this score already exists (duplicate prevention)
+            if (existingContent.includes(scoreLine.trim())) {
+                console.log('Score already saved, skipping duplicate');
+                return;
             }
             
             // Append new score
             const newContent = existingContent + scoreLine;
             
-            // Wait a bit before uploading to avoid rate limit
+            // Wait before uploading
             await new Promise(resolve => setTimeout(resolve, 1000));
             
-            // Upload with overwrite
+            // Upload
             const uploadResponse = await fetch('https://content.dropboxapi.com/2/files/upload', {
                 method: 'POST',
                 headers: {
