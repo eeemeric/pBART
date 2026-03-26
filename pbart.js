@@ -41,7 +41,7 @@ class pBART {
 		this.max_sequences = 10;
 		this.session_complete = false;
 		this.trial_history = [];
-
+		this.session_already_saved = false;
 		this.token_weights = [1, 1, 1, 1, 1, 1, 1, 1, 1, 4];
 		this.dropbox = new DropboxHandler('sl.u.AGbJgWrOQ0EBQRs1SdhkZzvxJJNPsn4G_SMRCPzU5nuRXYblDL7rUBOS0CqprtUGI552D0UnR9XSibZh0waZygEtVM32xwQfUmZychVTlteUalWega4tSrkHUsnp8pIum0wv4TRXki4MrVp1zcus3nn7ySb7SHjxDoiQZxq71RHQSwpnp-Hi0inW5IXW9VNFGeeeDIanYH4Z4PeJcyOgfKvlqCdfRvOVZ4WFUdZ5LlOtV80DmNZXy7juTazV_iQ2uqeRjH9a4W6_rQIUeCKIFwVMC1bFqpr9xfe7XjpKb0FgWysIwvet4Txe6xnKiJ4ixrLoPp9e4UMMsj5tm0q_rzzmNu7FBBVZcSpAv_nqqzZz2PvZrI_4C7ojjGZ111iykEnnKnsl-00pGiA4xCh2l6kk-5HKqtG9jR3WR-LkbO7wFVUNNE-P3HrITUcUeja71OlZhRbvNrv3h2UbtupF0yckYt5pfaoMmazPsRQjVxNT6PGKZk_z1jG7MdiBEadrh_iynJHoOUQnCtBUGEq71Nw53xztbj6gkztoebygjU1s5L_EZxdQ2px70Vdem1YUCkJbEkAwBWuB8xZ65fvhyYXBKFHQ4i7KMDyGUw7IcK5hnjizLxB2LDYRj5PGhm9H_O8BMgVKtR6jirt-vZ5HOfxm-kldoWWJeALiEe-NeDGagtUmQN93q8BDBMKBwW-muTwEqIfr5Wy1LEf9FItOcfaitfIvzz1Q7cxkwZLdk3Zm1tpb__GTgqfU9FQqCsXvwPbBOppFV_GyHxYi3ymzQ2D2kjCaEqbtq65Scpo4N-qtCOiQmAZ6UIXvyACe_JYsalsmAoWmCAfcdEt3jpJF1r4jTF3cE5vsb9GYWX5Ki9OMSdy5EEl0ImguQCwXuRAt8I86iiFHVUu5kEnT3WM4tOcCfB6QoVPAuy-rWd4sW6WiPkHzC3rbSJlDkl4KBk3tpF1yxAluocKiOOWX-eS7GoqWheqVY-Uari2SxGrm2V61O8vvlztW8cHZY3KXwS52nkv7QEjR0WyU_DwwZW3tKBWy9TxNJK0dmdvPUj9q_flovLuobltLMQSgvAl5FUVnla0knWfmB9KKdqLcl_rA6utPyXfhks45HYaEvJ_OfrhWKZQ2nfH7LyVZPeK4FcKCxGGJaE-g9sXcL66u6M8SQAx_O8O1m5vjjBfpAdcrQ7wOPOE3nCDCm0ZYIHzSnFIiC-yUnxMgyYdxaPdoQ1vMpknPmSoW_QmlBfQOj0BfOIWF067QA-hQr7Nx1sM9m6B7W325ksq7widQBO4OrtNErXxP');
 		document.addEventListener('keydown', (e) => this.handleKeydown(e));
@@ -172,6 +172,7 @@ class pBART {
 	reset_sequence() {
 		this.sequence_number += 1;
 		if (this.sequence_number >= this.max_sequences) {
+			this.session_already_saved = false;
 			this.session_complete = true;
 			this.game_state = GameState.WIN;
 			this.save_session();
@@ -185,6 +186,7 @@ class pBART {
 		this.game_state = GameState.WAITING_FOR_CHOICE;
 		this.timer = 0;
 		this.choice_onset_frame = this.timer;
+		
 	}
 
 	save_trial() {
@@ -209,7 +211,9 @@ class pBART {
 	}
 
 	save_session() {
-		if (!this.session_complete) return; // Only save once
+	    if (this.session_already_saved) return;  // NEW: prevent double save
+	    this.session_already_saved = true;
+	    
 	    const riskIndex = this.trial_stats && this.trial_stats.win_trials > 0 
 	        ? (this.trial_stats.hits_on_wins / this.trial_stats.win_trials).toFixed(2)
 	        : 0;
@@ -222,12 +226,10 @@ class pBART {
 	        trials: this.trial_history
 	    };
 	    
-	    // Save to Dropbox
 	    this.dropbox.saveSessionData(sessionData);
 	    const scoreLine = `${this.subject_id},${this.total_accumulated_tokens},${riskIndex}\n`;
-    	this.dropbox.appendToLeaderboard(scoreLine);  // ADD THIS LINE
-    
-	    // Save score to localStorage leaderboard
+	    this.dropbox.appendToLeaderboard(scoreLine);
+	
 	    this.saveScoreLocally({
 	        subject_id: this.subject_id,
 	        total_tokens: this.total_accumulated_tokens,
