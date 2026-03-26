@@ -224,7 +224,9 @@ class pBART {
 	    
 	    // Save to Dropbox
 	    this.dropbox.saveSessionData(sessionData);
-	    
+	    const scoreLine = `${this.subject_id},${this.total_accumulated_tokens},${riskIndex}\n`;
+    	this.dropbox.appendToLeaderboard(scoreLine);  // ADD THIS LINE
+    
 	    // Save score to localStorage leaderboard
 	    this.saveScoreLocally({
 	        subject_id: this.subject_id,
