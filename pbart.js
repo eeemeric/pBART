@@ -72,17 +72,9 @@ class pBART {
 
 
 	async showLeaderboard() {
-	    try {
-	        const response = await fetch('https://eeemeric.pythonanywhere.com/api/leaderboard');
-	        const data = await response.json();
-	        this.leaderboard_data = data;
-	        this.game_state = GameState.LEADERBOARD;
-	        this.timer = 0;
-	    } catch (error) {
-	        console.error('Error loading leaderboard:', error);
-	        this.leaderboard_data = [];
-	        this.game_state = GameState.LEADERBOARD;
-	    }
+	    this.leaderboard_data = this.loadScoresLocally();
+	    this.game_state = GameState.LEADERBOARD;
+	    this.timer = 0;
 	}
 	
 	async handleKeydown(e) {
@@ -225,12 +217,15 @@ class pBART {
 	        trials: this.trial_history
 	    };
 	    
-	    // Save full session data
+	    // Save to Dropbox
 	    this.dropbox.saveSessionData(sessionData);
 	    
-	    // Also save score line to leaderboard file
-	    const scoreLine = `${this.subject_id},${this.total_accumulated_tokens},${riskIndex}\n`;
-	    this.dropbox.appendToLeaderboard(scoreLine);
+	    // Save score to localStorage leaderboard
+	    this.saveScoreLocally({
+	        subject_id: this.subject_id,
+	        total_tokens: this.total_accumulated_tokens,
+	        risk_index: riskIndex
+	    });
 	}
 
 	update() {
@@ -521,6 +516,18 @@ class pBART {
 	    this.update();
 	    this.draw();
 	    requestAnimationFrame(() => this.gameLoop());
+	}
+
+	saveScoreLocally(score) {
+	    let leaderboard = JSON.parse(localStorage.getItem('pbart_leaderboard') || '[]');
+	    leaderboard.push(score);
+	    leaderboard.sort((a, b) => b.total_tokens - a.total_tokens);
+	    leaderboard = leaderboard.slice(0, 10); // Keep top 10
+	    localStorage.setItem('pbart_leaderboard', JSON.stringify(leaderboard));
+	}
+	
+	loadScoresLocally() {
+	    return JSON.parse(localStorage.getItem('pbart_leaderboard') || '[]');
 	}
 }
 
