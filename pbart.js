@@ -302,8 +302,14 @@ class pBART {
 		        
 		        <p style="font-size: 28px; margin-top: 30px;">Press SPACE to begin or L to see the leaderboard. Press esc to quit. ESC</p>
 		    `;
-			document.getElementById('welcomeBtn').onclick = () => {
-	        this.game_state = GameState.USERNAME_INPUT;
+			document.getElementById('welcomeBtn').onclick = () => {this.game_state = GameState.USERNAME_INPUT;
+			<button id="leaderboardBtn" style="padding: 20px 40px; font-size: 28px; background-color: #FFD700; color: black; border: none; border-radius: 10px; cursor: pointer; margin-top: 20px; margin-left: 10px;">
+				Leaderboard (L)
+			</button>
+			document.getElementById('leaderboardBtn').onclick = () => {
+			    this.showLeaderboard();
+			};
+			};
 			
 		} else if (this.game_state === GameState.USERNAME_INPUT) {
 		    content.innerHTML = `
