@@ -244,6 +244,10 @@ class pBART {
 	update() {
 		this.timer += 1;
 
+		if (this.game_state === GameState.WAITING_FOR_CHOICE) {
+	        this.attachButtonListeners();  // ADD THIS
+	    }
+		
 		if (this.game_state === GameState.REVEALING_OUTCOME) {
 			if (this.timer >= 60) {
 				this.trial.earned_tokens += this.trial.tokens_this_hit;
@@ -298,6 +302,9 @@ class pBART {
 		        
 		        <p style="font-size: 28px; margin-top: 30px;">Press SPACE to begin or L to see the leaderboard. Press esc to quit. ESC</p>
 		    `;
+			document.getElementById('welcomeBtn').onclick = () => {
+	        this.game_state = GameState.USERNAME_INPUT;
+			
 		} else if (this.game_state === GameState.USERNAME_INPUT) {
 		    content.innerHTML = `
 		        <h1 style="font-size: 36px; margin-bottom: 50px;">Enter Username</h1>
@@ -588,6 +595,31 @@ class pBART {
 	        total_tokens: this.total_accumulated_tokens,
 	        risk_index: riskIndex
 	    });
+	}
+
+	attachButtonListeners() {
+	    const leftBtn = document.getElementById('leftBtn');
+	    const rightBtn = document.getElementById('rightBtn');
+	    
+	    if (leftBtn) {
+	        leftBtn.onclick = () => {
+	            if (this.trial.hit_on_left) {
+	                this.handle_hit();
+	            } else {
+	                this.handle_stay();
+	            }
+	        };
+	    }
+	    
+	    if (rightBtn) {
+	        rightBtn.onclick = () => {
+	            if (this.trial.hit_on_left) {
+	                this.handle_stay();
+	            } else {
+	                this.handle_hit();
+	            }
+	        };
+	    }
 	}
 	
 }
