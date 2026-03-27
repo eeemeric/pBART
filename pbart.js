@@ -302,8 +302,12 @@ class pBART {
 		        
 		        <p style="font-size: 28px; margin-top: 30px;">Press SPACE to begin or L to see the leaderboard. Press esc to quit. ESC</p>
 		    `;
-			document.getElementById('welcomeBtn').onclick = () => {this.game_state = GameState.USERNAME_INPUT;
-			};
+			// Set onclick only if button exists
+		    const welcomeBtn = document.getElementById('welcomeBtn');
+		    if (welcomeBtn && !welcomeBtn.onclick) {
+		        welcomeBtn.onclick = () => {
+		            this.game_state = GameState.USERNAME_INPUT;
+		        };
 		} else if (this.game_state === GameState.USERNAME_INPUT) {
 		    content.innerHTML = `
 		        <h1 style="font-size: 36px; margin-bottom: 50px;">Enter Username</h1>
