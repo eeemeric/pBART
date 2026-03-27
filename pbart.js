@@ -313,47 +313,58 @@ class pBART {
 				this.trial.positions_set = true;
 			}
 
-			const hitColor = '#87CEEB';
-			const stayColor = '#ffffff';
-
-			const leftButton = this.trial.hit_on_left ? 'HIT' : 'STAY';
-			const rightButton = this.trial.hit_on_left ? 'STAY' : 'HIT';
-			const leftColor = this.trial.hit_on_left ? hitColor : stayColor;
-			const rightColor = this.trial.hit_on_left ? stayColor : hitColor;
-
-			content.innerHTML = `
-				<div style="font-size: 14px; margin-bottom: 30px; text-align: left;">
-					<div>Sequence: ${this.sequence_number}/${this.max_sequences}</div>
-					<div>Total Tokens: ${this.total_accumulated_tokens}</div>
-				</div>
-				
-				<!-- Central Annulus (SVG) -->
-				<div style="width: 200px; height: 200px; margin: 30px auto;">
-					<svg viewBox="0 0 200 200" style="width: 100%; height: 100%;">
-						<!-- Outer circle (background) -->
-						<circle cx="100" cy="100" r="95" fill="none" stroke="#ddd" stroke-width="8"/>
-						<!-- Filled annulus (proportional to 20 tokens) -->
-						<circle cx="100" cy="100" r="95" fill="none" stroke="#333" stroke-width="8" 
-								stroke-dasharray="${this.trial.earned_tokens * 29.845} 596.9"
-								stroke-dashoffset="0"
-								transform="rotate(-90 100 100)"
-								stroke-linecap="round"/>
-						<!-- Inner circle with tokens -->
-						<circle cx="100" cy="100" r="60" fill="#e8e8e8" stroke="black" stroke-width="2"/>
-						<text x="100" y="115" font-size="60" font-weight="bold" text-anchor="middle">${this.trial.earned_tokens}</text>
-					</svg>
-				</div>
-				
-				<!-- HIT and STAY buttons -->
-				<div style="display: flex; justify-content: space-around; margin: 30px 0;">
-					<div style="text-align: center;">
-						<div style="width: 120px; height: 120px; border-radius: 50%; background-color: ${leftColor}; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; border: 3px solid black;">${leftButton}</div>
-					</div>
-					<div style="text-align: center;">
-						<div style="width: 120px; height: 120px; border-radius: 50%; border: 3px solid black; background-color: ${rightColor}; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold;">${rightButton}</div>
-					</div>
-				</div>
-			`;
+			const hitPosition = this.trial.hit_on_left ? 'left' : 'right';
+		    const hitColor = '#87CEEB';
+		    const stayColor = '#ffffff';
+		    
+		    const leftButton = this.trial.hit_on_left ? 'HIT' : 'STAY';
+		    const rightButton = this.trial.hit_on_left ? 'STAY' : 'HIT';
+		    const leftColor = this.trial.hit_on_left ? hitColor : stayColor;
+		    const rightColor = this.trial.hit_on_left ? stayColor : hitColor;
+		    
+		    content.innerHTML = `
+		        <div style="font-size: 14px; margin-bottom: 30px; text-align: left;">
+		            <div>Sequence: ${this.sequence_number}/${this.max_sequences}</div>
+		            <div>Total Tokens: ${this.total_accumulated_tokens}</div>
+		        </div>
+		        
+		        <!-- Central Annulus -->
+		        <div style="width: 200px; height: 200px; margin: 30px auto; position: relative; display: flex; align-items: center; justify-content: center;">
+		            <div style="width: 200px; height: 200px; border-radius: 50%; border: 8px solid #999; position: absolute;"></div>
+		            <div style="width: 120px; height: 120px; border-radius: 50%; background-color: #e8e8e8; display: flex; align-items: center; justify-content: center; border: 3px solid black; position: relative; z-index: 1;">
+		                <div style="font-size: 60px; font-weight: bold;">${this.trial.earned_tokens}</div>
+		            </div>
+		        </div>
+		        
+		        <!-- Tap Buttons -->
+		        <div style="display: flex; justify-content: space-around; margin: 30px 0; gap: 20px;">
+		            <button id="leftBtn" style="width: 120px; height: 120px; border-radius: 50%; background-color: ${leftColor}; border: 3px solid black; font-size: 20px; font-weight: bold; cursor: pointer;">
+		                ${leftButton}
+		            </button>
+		            <button id="rightBtn" style="width: 120px; height: 120px; border-radius: 50%; background-color: ${rightColor}; border: 3px solid black; font-size: 20px; font-weight: bold; cursor: pointer;">
+		                ${rightButton}
+		            </button>
+		        </div>
+		        
+		        <p style="font-size: 12px; color: #666; margin-top: 20px;">Tap buttons or use arrow keys</p>
+		    `;
+		    
+		    // Attach click listeners
+		    document.getElementById('leftBtn').addEventListener('click', () => {
+		        if (this.trial.hit_on_left) {
+		            this.handle_hit();
+		        } else {
+		            this.handle_stay();
+		        }
+		    });
+		    
+		    document.getElementById('rightBtn').addEventListener('click', () => {
+		        if (this.trial.hit_on_left) {
+		            this.handle_stay();
+		        } else {
+		            this.handle_hit();
+		        }
+		    });
 		} else if (this.game_state === GameState.REVEALING_OUTCOME) {
 			const tokenColors = ['#FF6B6B', '#FF8E72', '#FFA500', '#FFD700', '#90EE90', '#87CEEB', '#6495ED', '#9370DB', '#FF1493', '#FFB6C1'];
 			const revealedColor = tokenColors[this.trial.tokens_this_hit - 1] || '#888888';
