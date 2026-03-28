@@ -175,6 +175,7 @@ class pBART {
 
 	reset_sequence() {
 	    this.sequence_number += 1;
+		this.sequence_earned_tokens = 0; 
 	    if (this.sequence_number >= this.max_sequences) {
 			
 	        this.session_complete = true;
