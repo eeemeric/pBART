@@ -544,6 +544,7 @@ class pBART {
 		    
 		    content.innerHTML = leaderboardHTML;
 	}
+	}
 	gameLoop() {
 	    this.update();
 	    this.draw();
