@@ -498,7 +498,7 @@ class pBART {
 									stroke-linecap="round"/>
 							<!-- Inner circle with tokens -->
 							<circle cx="100" cy="100" r="60" fill="#e8e8e8" stroke="black" stroke-width="2"/>
-							<text x="100" y="115" font-size="60" font-weight="bold" text-anchor="middle">${this.trial.earned_tokens}</text>
+							<text x="100" y="115" font-size="60" font-weight="bold" text-anchor="middle">${this.sequence_earned_tokens}</text>
 						</svg>
 					</div>
 					
@@ -524,7 +524,7 @@ class pBART {
 			                        stroke-linecap="round"/>
 			                <!-- Inner circle with tokens -->
 			                <circle cx="100" cy="100" r="60" fill="#e8e8e8" stroke="black" stroke-width="2"/>
-			                <text x="100" y="115" font-size="60" font-weight="bold" text-anchor="middle">${this.trial.earned_tokens}</text>
+			                <text x="100" y="115" font-size="60" font-weight="bold" text-anchor="middle">${this.sequence_earned_tokens}</text>
 			            </svg>
 			        </div>
 			        
