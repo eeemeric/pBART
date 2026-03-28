@@ -529,41 +529,46 @@ class pBART {
 			    }
 			}
 		} else if (this.game_state === GameState.BUST) {
-			// Calculate overage (tokens beyond 20)
-			const overage = this.trial.sequence_total - 20;
-			const overage_percentage = Math.min(overage / 20, 1.0); // Cap at 100% for display
-
-			content.innerHTML = `
-				<h1 style="font-size: 48px; color: red; margin-bottom: 30px;">BUST!</h1>
-				
-				<!-- Central Annulus (SVG) - Full black + red overage -->
-				<div style="width: 200px; height: 200px; margin: 30px auto;">
-					<svg viewBox="0 0 200 200" style="width: 100%; height: 100%;">
-						<!-- Full black annulus (background) -->
-						<circle cx="100" cy="100" r="95" fill="none" stroke="black" stroke-width="8"/>
-						<!-- Red overage segment -->
-						<circle cx="100" cy="100" r="95" fill="none" stroke="red" stroke-width="8" 
-								stroke-dasharray="${overage_percentage * 596.9} 596.9"
-								stroke-dashoffset="0"
-								transform="rotate(-90 100 100)"
-								stroke-linecap="round"/>
-						<!-- Inner circle with 0 -->
-						<circle cx="100" cy="100" r="60" fill="#e8e8e8" stroke="black" stroke-width="2"/>
-						<text x="100" y="115" font-size="60" font-weight="bold" text-anchor="middle">0</text>
-					</svg>
-				</div>
-				
-				<div style="font-size: 24px; margin: 20px 0; color: red;">All tokens lost</div>
-				<p style="font-size: 18px; margin-top: 20px;">Press SPACE to continue</p>
-			`;
-			const nextBtn = document.getElementById('nextTrialBtn');
+		    // Calculate overage (tokens beyond 20)
+		    const overage = this.trial.sequence_total - 20;
+		    const overage_percentage = Math.min(overage / 20, 1.0);
+		
+		    content.innerHTML = `
+		        <h1 style="font-size: 48px; color: red; margin-bottom: 30px;">BUST!</h1>
+		        
+		        <!-- Central Annulus (SVG) - Full black + red overage -->
+		        <div style="width: 200px; height: 200px; margin: 30px auto;">
+		            <svg viewBox="0 0 200 200" style="width: 100%; height: 100%;">
+		                <!-- Full black annulus (background) -->
+		                <circle cx="100" cy="100" r="95" fill="none" stroke="black" stroke-width="8"/>
+		                <!-- Red overage segment -->
+		                <circle cx="100" cy="100" r="95" fill="none" stroke="red" stroke-width="8" 
+		                        stroke-dasharray="${overage_percentage * 596.9} 596.9"
+		                        stroke-dashoffset="0"
+		                        transform="rotate(-90 100 100)"
+		                        stroke-linecap="round"/>
+		                <!-- Inner circle with 0 -->
+		                <circle cx="100" cy="100" r="60" fill="#e8e8e8" stroke="black" stroke-width="2"/>
+		                <text x="100" y="115" font-size="60" font-weight="bold" text-anchor="middle">0</text>
+		            </svg>
+		        </div>
+		        
+		        <div style="font-size: 24px; margin: 20px 0; color: red;">All tokens lost</div>
+		        
+		        <button id="nextTrialBtn" style="padding: 15px 30px; font-size: 20px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">
+		            Next Trial
+		        </button>
+		        
+		        <p style="font-size: 18px; margin-top: 20px; color: #666;">Or press SPACE</p>
+		    `;
+		    
+		    const nextBtn = document.getElementById('nextTrialBtn');
 		    if (nextBtn) {
 		        nextBtn.onclick = () => {
 		            this.game_state = GameState.INTER_SEQUENCE_DELAY;
 		            this.timer = 0;
 		        };
 		    }
-			    
 		} else if (this.game_state === GameState.LEADERBOARD) {
 		    let leaderboardHTML = `
 		        <h1 style="font-size: 48px; margin-bottom: 40px;">🏆 Leaderboard</h1>
