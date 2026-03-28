@@ -510,12 +510,13 @@ class pBART {
 					<p style="font-size: 18px; margin-top: 20px;">Press SPACE to continue</p>
 				`;
 				const nextBtn = document.getElementById('nextTrialBtn');
-		        if (nextBtn && !nextBtn.onclick) {
-		            nextBtn.onclick = () => {
-		                this.game_state = GameState.INTER_SEQUENCE_DELAY;
-		                this.timer = 0;
-		            };
-			}
+			        if (nextBtn && !nextBtn.onclick) {
+			            nextBtn.onclick = () => {
+			                this.game_state = GameState.INTER_SEQUENCE_DELAY;
+			                this.timer = 0;
+			            };
+			        }
+			    }
 		} else if (this.game_state === GameState.BUST) {
 			// Calculate overage (tokens beyond 20)
 			const overage = this.trial.sequence_total - 20;
