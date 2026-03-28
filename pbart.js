@@ -8,7 +8,8 @@ const GameState = {
 	WIN: 'WIN',
 	BUST: 'BUST',
 	INTER_SEQUENCE_DELAY: 'INTER_SEQUENCE_DELAY',
-	LEADERBOARD: 'LEADERBOARD'
+	LEADERBOARD: 'LEADERBOARD'..
+    FINAL_LEADERBOARD: 'FINAL_LEADERBOARD'
 };
 
 class Trial {
@@ -22,6 +23,7 @@ class Trial {
 		this.result = 'CONTINUE';
 		this.total_accumulated = 0;
 		this.reaction_time_ms = 0;
+		this.sequence_earned_tokens = 0;  // Running total for sequence
 	}
 }
 
@@ -178,6 +180,12 @@ class pBART {
 	        this.session_complete = true;
 	        this.game_state = GameState.WIN;
 	        this.save_session();
+			// NEW: Show final leaderboard after delay
+		    setTimeout(() => {
+		        this.game_state = GameState.FINAL_LEADERBOARD;
+		        this.loadScoresLocally();
+		        this.calculateUserRank();
+		    }, 3000);
 	        return;
 	    }
 	    this.session_already_saved = false;  // Only reset for next sequence
@@ -190,6 +198,7 @@ class pBART {
 		this.game_state = GameState.WAITING_FOR_CHOICE;
 		this.timer = 0;
 		this.choice_onset_frame = this.timer;
+		this.sequence_earned_tokens = 0;
 		
 	}
 
@@ -253,7 +262,8 @@ class pBART {
 			if (this.timer >= 60) {
 				this.trial.earned_tokens += this.trial.tokens_this_hit;
 				this.trial.sequence_total += this.trial.tokens_this_hit;
-
+				this.sequence_earned_tokens += this.trial.tokens_this_hit;
+				
 				if (this.trial.sequence_total > 20) {
 					this.trial.result = 'BUST';
 					this.total_accumulated_tokens = 0;
@@ -612,8 +622,60 @@ class pBART {
 		    `;
 		    
 		    content.innerHTML = leaderboardHTML;
+		} else if (this.game_state === GameState.INTER_SEQUENCE_DELAY) {
+			content.innerHTML = ``;  // Blank screen
+		} else if (this.game_state === GameState.FINAL_LEADERBOARD) {
+		    let leaderboardHTML = `
+		        <h1 style="font-size: 48px; margin-bottom: 40px;">🏆 Final Leaderboard</h1>
+		    `;
+		    
+		    const scores = this.loadScoresLocally();
+		    
+		    if (this.user_rank > 10) {
+		        leaderboardHTML += `
+		            <div style="background-color: #fff3cd; padding: 20px; border-radius: 10px; margin-bottom: 30px; font-size: 18px;">
+		                <p style="color: #856404;">Sorry, you did not make the top 10!</p>
+		                <p style="font-size: 24px; font-weight: bold; color: #856404;">Your rank: ${this.user_rank}</p>
+		                <p style="font-size: 20px;">Your score: ${this.total_accumulated_tokens} tokens</p>
+		            </div>
+		        `;
+		    }
+		    
+		    leaderboardHTML += `
+		        <table style="width: 100%; max-width: 700px; margin: 0 auto; border-collapse: collapse; font-size: 18px;">
+		            <thead>
+		                <tr style="background-color: #007bff; color: white;">
+		                    <th style="padding: 15px; text-align: left; border: 2px solid #333;">Rank</th>
+		                    <th style="padding: 15px; text-align: left; border: 2px solid #333;">Player</th>
+		                    <th style="padding: 15px; text-align: center; border: 2px solid #333;">Tokens</th>
+		                    <th style="padding: 15px; text-align: center; border: 2px solid #333;">Risk Index</th>
+		                </tr>
+		            </thead>
+		            <tbody>
+		    `;
+		    
+		    scores.slice(0, 10).forEach((entry, index) => {
+		        leaderboardHTML += `
+		            <tr style="background-color: ${index % 2 === 0 ? '#f9f9f9' : 'white'};">
+		                <td style="padding: 15px; border: 1px solid #ddd;">${index + 1}</td>
+		                <td style="padding: 15px; border: 1px solid #ddd;">${entry.subject_id}</td>
+		                <td style="padding: 15px; text-align: center; border: 1px solid #ddd;">${entry.total_tokens}</td>
+		                <td style="padding: 15px; text-align: center; border: 1px solid #ddd;">${entry.risk_index}</td>
+		            </tr>
+		        `;
+		    });
+		    
+		    leaderboardHTML += `
+		            </tbody>
+		        </table>
+		        
+		        <p style="font-size: 16px; margin-top: 40px; color: #666;">Thank you for participating!</p>
+		    `;
+		    
+		    content.innerHTML = leaderboardHTML;
 		}
 	}
+	
 	gameLoop() {
 	    this.update();
 	    this.draw();
@@ -693,6 +755,20 @@ class pBART {
 	        };
 	    }
 	}
+
+	calculateUserRank() {
+	    const scores = this.loadScoresLocally();
+	    let rank = 1;
+	    for (let i = 0; i < scores.length; i++) {
+	        if (scores[i].subject_id === this.subject_id && 
+	            scores[i].total_tokens === this.total_accumulated_tokens) {
+	            this.user_rank = i + 1;
+	            return;
+	        }
+	    }
+	    this.user_rank = scores.length + 1;
+	}
+	
 	
 }
 
