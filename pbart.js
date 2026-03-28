@@ -372,13 +372,13 @@ class pBART {
 		        };
 		    }
 		} else if (this.game_state === GameState.WAITING_FOR_CHOICE) {
-			// Randomize positions each trial
-			if (!this.trial.positions_set) {
-				this.trial.hit_on_left = Math.random() > 0.5;
-				this.trial.positions_set = true;
-			}
-
-			const hitPosition = this.trial.hit_on_left ? 'left' : 'right';
+		    // Randomize positions each trial
+		    if (!this.trial.positions_set) {
+		        this.trial.hit_on_left = Math.random() > 0.5;
+		        this.trial.positions_set = true;
+		    }
+		
+		    const hitPosition = this.trial.hit_on_left ? 'left' : 'right';
 		    const hitColor = '#87CEEB';
 		    const stayColor = '#ffffff';
 		    
@@ -393,12 +393,21 @@ class pBART {
 		            <div>Total Tokens: ${this.total_accumulated_tokens}</div>
 		        </div>
 		        
-		        <!-- Central Annulus -->
-		        <div style="width: 200px; height: 200px; margin: 30px auto; position: relative; display: flex; align-items: center; justify-content: center;">
-		            <div style="width: 200px; height: 200px; border-radius: 50%; border: 8px solid #999; position: absolute;"></div>
-		            <div style="width: 120px; height: 120px; border-radius: 50%; background-color: #e8e8e8; display: flex; align-items: center; justify-content: center; border: 3px solid black; position: relative; z-index: 1;">
-		                <div style="font-size: 60px; font-weight: bold;">${this.trial.earned_tokens}</div>
-		            </div>
+		        <!-- Central Annulus with SVG -->
+		        <div style="width: 200px; height: 200px; margin: 30px auto;">
+		            <svg viewBox="0 0 200 200" style="width: 100%; height: 100%;">
+		                <!-- Outer circle (background) -->
+		                <circle cx="100" cy="100" r="95" fill="none" stroke="#ddd" stroke-width="8"/>
+		                <!-- Filled annulus (proportional to 20 tokens) -->
+		                <circle cx="100" cy="100" r="95" fill="none" stroke="#333" stroke-width="8" 
+		                        stroke-dasharray="${this.sequence_earned_tokens * 29.845} 596.9"
+		                        stroke-dashoffset="0"
+		                        transform="rotate(-90 100 100)"
+		                        stroke-linecap="round"/>
+		                <!-- Inner circle with tokens -->
+		                <circle cx="100" cy="100" r="60" fill="#e8e8e8" stroke="black" stroke-width="2"/>
+		                <text x="100" y="115" font-size="60" font-weight="bold" text-anchor="middle">${this.sequence_earned_tokens}</text>
+		            </svg>
 		        </div>
 		        
 		        <!-- Tap Buttons -->
@@ -430,51 +439,6 @@ class pBART {
 		            this.handle_hit();
 		        }
 		    });
-		} else if (this.game_state === GameState.REVEALING_OUTCOME) {
-			const tokenColors = ['#FF6B6B', '#FF8E72', '#FFA500', '#FFD700', '#90EE90', '#87CEEB', '#6495ED', '#9370DB', '#FF1493', '#FFB6C1'];
-			const revealedColor = tokenColors[this.trial.tokens_this_hit - 1] || '#888888';
-
-			// Show colored circle where the HIT button was
-			const hitPosition = this.trial.hit_on_left ? 'left' : 'right';
-
-			content.innerHTML = `
-				<div style="font-size: 14px; margin-bottom: 30px; text-align: left;">
-					<div>Sequence: ${this.sequence_number}/${this.max_sequences}</div>
-					<div>Total Tokens: ${this.total_accumulated_tokens}</div>
-				</div>
-				
-				<!-- Central Annulus (SVG) -->
-				<div style="width: 200px; height: 200px; margin: 30px auto;">
-					<svg viewBox="0 0 200 200" style="width: 100%; height: 100%;">
-						<!-- Outer circle (background) -->
-						<circle cx="100" cy="100" r="95" fill="none" stroke="#ddd" stroke-width="8"/>
-						<!-- Filled annulus (proportional to 20 tokens) -->
-						<circle cx="100" cy="100" r="95" fill="none" stroke="#333" stroke-width="8" 
-								stroke-dasharray="${this.trial.earned_tokens * 29.845} 596.9"
-								stroke-dashoffset="0"
-								transform="rotate(-90 100 100)"
-								stroke-linecap="round"/>
-						<!-- Inner circle with tokens -->
-						<circle cx="100" cy="100" r="60" fill="#e8e8e8" stroke="black" stroke-width="2"/>
-						<text x="100" y="115" font-size="60" font-weight="bold" text-anchor="middle">${this.trial.earned_tokens}</text>
-					</svg>
-				</div>
-				
-				<!-- Revealed token circle -->
-				<div style="display: flex; justify-content: space-around; margin: 30px 0;">
-					${hitPosition === 'left' ? `
-						<div style="text-align: center;">
-							<div style="width: 120px; height: 120px; border-radius: 50%; background-color: ${revealedColor}; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; border: 3px solid black; color: white;">+${this.trial.tokens_this_hit}</div>
-						</div>
-						<div style="width: 120px; height: 120px;"></div>
-					` : `
-						<div style="width: 120px; height: 120px;"></div>
-						<div style="text-align: center;">
-							<div style="width: 120px; height: 120px; border-radius: 50%; background-color: ${revealedColor}; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; border: 3px solid black; color: white;">+${this.trial.tokens_this_hit}</div>
-						</div>
-					`}
-				</div>
-			`;
 		} else if (this.game_state === GameState.WIN) {
 			if (this.session_complete) {
 				content.innerHTML = `
