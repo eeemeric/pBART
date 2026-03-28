@@ -278,10 +278,11 @@ class pBART {
 				this.timer = 0;
 			}
 		} else if (this.game_state === GameState.INTER_SEQUENCE_DELAY) {
-			if (this.timer >= 60) {
-				this.reset_sequence();
-				this.timer = 0;
-			}
+		    if (this.timer >= 60) {  // 1 second at 60 FPS
+		        this.game_state = GameState.WAITING_FOR_CHOICE;
+		        this.choice_onset_frame = this.timer;
+		        this.timer = 0;
+		    }
 		}
 	}
 
