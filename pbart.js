@@ -491,37 +491,43 @@ class pBART {
 					<p style="font-size: 18px; margin-top: 30px;">Saved to Dropbox!</p>
 				`;
 			} else {
-				content.innerHTML = `
-					<h1 style="font-size: 48px; color: green; margin-bottom: 30px;">WIN!</h1>
-					
-					<!-- Central Annulus (SVG) -->
-					<div style="width: 200px; height: 200px; margin: 30px auto;">
-						<svg viewBox="0 0 200 200" style="width: 100%; height: 100%;">
-							<!-- Outer circle (background) -->
-							<circle cx="100" cy="100" r="95" fill="none" stroke="#ddd" stroke-width="8"/>
-							<!-- Filled annulus (proportional to 20 tokens) -->
-							<circle cx="100" cy="100" r="95" fill="none" stroke="#333" stroke-width="8" 
-									stroke-dasharray="${this.trial.earned_tokens * 29.845} 596.9"
-									stroke-dashoffset="0"
-									transform="rotate(-90 100 100)"
-									stroke-linecap="round"/>
-							<!-- Inner circle with tokens -->
-							<circle cx="100" cy="100" r="60" fill="#e8e8e8" stroke="black" stroke-width="2"/>
-							<text x="100" y="115" font-size="60" font-weight="bold" text-anchor="middle">${this.trial.earned_tokens}</text>
-						</svg>
-					</div>
-					
-					<div style="font-size: 24px; margin: 20px 0;">+${this.trial.earned_tokens} tokens</div>
-					<p style="font-size: 18px; margin-top: 20px;">Press SPACE to continue</p>
-				`;
-				const nextBtn = document.getElementById('nextTrialBtn');
-			        if (nextBtn && !nextBtn.onclick) {
-			            nextBtn.onclick = () => {
-			                this.game_state = GameState.INTER_SEQUENCE_DELAY;
-			                this.timer = 0;
-			            };
-			        }
+			    content.innerHTML = `
+			        <h1 style="font-size: 48px; color: green; margin-bottom: 30px;">WIN!</h1>
+			        
+			        <!-- Central Annulus (SVG) -->
+			        <div style="width: 200px; height: 200px; margin: 30px auto;">
+			            <svg viewBox="0 0 200 200" style="width: 100%; height: 100%;">
+			                <!-- Outer circle (background) -->
+			                <circle cx="100" cy="100" r="95" fill="none" stroke="#ddd" stroke-width="8"/>
+			                <!-- Filled annulus (proportional to 20 tokens) -->
+			                <circle cx="100" cy="100" r="95" fill="none" stroke="#333" stroke-width="8" 
+			                        stroke-dasharray="${this.trial.earned_tokens * 29.845} 596.9"
+			                        stroke-dashoffset="0"
+			                        transform="rotate(-90 100 100)"
+			                        stroke-linecap="round"/>
+			                <!-- Inner circle with tokens -->
+			                <circle cx="100" cy="100" r="60" fill="#e8e8e8" stroke="black" stroke-width="2"/>
+			                <text x="100" y="115" font-size="60" font-weight="bold" text-anchor="middle">${this.trial.earned_tokens}</text>
+			            </svg>
+			        </div>
+			        
+			        <div style="font-size: 24px; margin: 20px 0;">+${this.trial.earned_tokens} tokens</div>
+			        
+			        <button id="nextTrialBtn" style="padding: 15px 30px; font-size: 20px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">
+			            Next Trial
+			        </button>
+			        
+			        <p style="font-size: 18px; margin-top: 20px; color: #666;">Or press SPACE</p>
+			    `;
+			    
+			    const nextBtn = document.getElementById('nextTrialBtn');
+			    if (nextBtn) {
+			        nextBtn.onclick = () => {
+			            this.game_state = GameState.INTER_SEQUENCE_DELAY;
+			            this.timer = 0;
+			        };
 			    }
+			}
 		} else if (this.game_state === GameState.BUST) {
 			// Calculate overage (tokens beyond 20)
 			const overage = this.trial.sequence_total - 20;
@@ -551,12 +557,13 @@ class pBART {
 				<p style="font-size: 18px; margin-top: 20px;">Press SPACE to continue</p>
 			`;
 			const nextBtn = document.getElementById('nextTrialBtn');
-			if (nextBtn && !nextBtn.onclick) {
-				nextBtn.onclick = () => {
-					this.game_state = GameState.INTER_SEQUENCE_DELAY;
-					this.timer = 0;
-				};
-			}
+		    if (nextBtn) {
+		        nextBtn.onclick = () => {
+		            this.game_state = GameState.INTER_SEQUENCE_DELAY;
+		            this.timer = 0;
+		        };
+		    }
+			    
 		} else if (this.game_state === GameState.LEADERBOARD) {
 		    let leaderboardHTML = `
 		        <h1 style="font-size: 48px; margin-bottom: 40px;">🏆 Leaderboard</h1>
