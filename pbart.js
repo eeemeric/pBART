@@ -278,11 +278,11 @@ class pBART {
 		const content = document.getElementById('content');
 
 		if (this.game_state === GameState.WELCOME) {
-			content.innerHTML = `
+		    content.innerHTML = `
 		        <h1 style="font-size: 56px; margin-bottom: 30px;">🎮 Balloon Analogue Risk Task</h1>
 		        
 		        <div style="max-width: 600px; text-align: left; font-size: 22px; line-height: 1.8; margin: 30px auto;">
-    				<h2 style="font-size: 28px; margin-bottom: 15px;">Goal</h2>
+		            <h2 style="font-size: 28px; margin-bottom: 15px;">Goal</h2>
 		            <p style="margin-bottom: 20px;">Accumulate as many tokens as possible</p>
 		            
 		            <h2 style="font-size: 28px; margin-bottom: 15px;">Rules</h2>
@@ -300,15 +300,27 @@ class pBART {
 		            </ul>
 		        </div>
 		        
-		        <p style="font-size: 28px; margin-top: 30px;">Press SPACE to begin or L to see the leaderboard. Press esc to quit. ESC</p>
+		        <button id="welcomeBtn" style="padding: 20px 40px; font-size: 28px; background-color: #007bff; color: white; border: none; border-radius: 10px; cursor: pointer; margin-top: 30px;">
+		            Start Game
+		        </button>
+		        <button id="leaderboardBtn" style="padding: 20px 40px; font-size: 28px; background-color: #FFD700; color: black; border: none; border-radius: 10px; cursor: pointer; margin-top: 20px; margin-left: 10px;">
+		            Leaderboard (L)
+		        </button>
 		    `;
-			// Set onclick only if button exists
+		    
 		    const welcomeBtn = document.getElementById('welcomeBtn');
 		    if (welcomeBtn && !welcomeBtn.onclick) {
 		        welcomeBtn.onclick = () => {
 		            this.game_state = GameState.USERNAME_INPUT;
 		        };
-			}
+		    }
+		    
+		    const leaderboardBtn = document.getElementById('leaderboardBtn');
+		    if (leaderboardBtn && !leaderboardBtn.onclick) {
+		        leaderboardBtn.onclick = () => {
+		            this.showLeaderboard();
+		        };
+		    }
 		} else if (this.game_state === GameState.USERNAME_INPUT) {
 		    content.innerHTML = `
 		        <h1 style="font-size: 36px; margin-bottom: 50px;">Enter Username</h1>
