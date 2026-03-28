@@ -175,33 +175,32 @@ class pBART {
 
 	reset_sequence() {
 	    this.sequence_number += 1;
-		this.sequence_earned_tokens = 0; 
-		this.trial = new Trial();
+	    this.sequence_earned_tokens = 0;  // Reset at TOP
+	    
 	    if (this.sequence_number >= this.max_sequences) {
-			
 	        this.session_complete = true;
 	        this.game_state = GameState.WIN;
 	        this.save_session();
-			// NEW: Show final leaderboard after delay
-		    setTimeout(() => {
-		        this.game_state = GameState.FINAL_LEADERBOARD;
-		        this.loadScoresLocally();
-		        this.calculateUserRank();
-		    }, 3000);
+	        
+	        setTimeout(() => {
+	            this.game_state = GameState.FINAL_LEADERBOARD;
+	            this.loadScoresLocally();
+	            this.calculateUserRank();
+	        }, 3000);
 	        return;
 	    }
-	    this.session_already_saved = false;  // Only reset for next sequence
+	    
+	    this.session_already_saved = false;
 	    this.dropbox.score_appended_this_session = false;
-		this.trial = new Trial();
-		this.trial.sequence_number = this.sequence_number;
-		this.trial.trial_number = 0;
-		this.trial.earned_tokens = 0;
-		this.trial.sequence_total = 0;
-		this.game_state = GameState.WAITING_FOR_CHOICE;
-		this.timer = 0;
-		this.choice_onset_frame = this.timer;
-		this.sequence_earned_tokens = 0;
-		
+	    
+	    this.trial = new Trial();  // Only once
+	    this.trial.sequence_number = this.sequence_number;
+	    this.trial.trial_number = 0;
+	    this.trial.earned_tokens = 0;
+	    this.trial.sequence_total = 0;
+	    this.game_state = GameState.WAITING_FOR_CHOICE;
+	    this.timer = 0;
+	    this.choice_onset_frame = this.timer;
 	}
 
 	save_trial() {
