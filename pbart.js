@@ -46,6 +46,7 @@ class pBART {
 		this.dropbox = new DropboxHandler('sl.u.AGYPFRydBUlEAeoUmxsk5mz5GzqRUJPq-LljSRmc1ROh7TkM5eUrjepM4szNyPsTfAM1bWYPZ_r-89fSh9Ei1ewOpRLC14NBRFc2RxCHd9ntLwC9EmdCNCsLpL2xlJa8gNcl8tisE67o5R090tb8iCmWwLoXKM_dEcQWLk3YjGleri5ds8tkYh-Fl_NnVWJHZKgi1UywcfXkqlr6tg8TUPlhOSlRcJfpct6ENTQ4FsEX1kzLxfoay9dI8HG-tl37DPPjxaViMe2Kn_UVdD8EiUppFt-6GmyWnTG8cTc1GUMcEF25aZ2Clr_cpZF-NcPYNyKHh6EDJ8EgOQuOjxiOpOreEsoWKldNG398O6-Cu1gbHtNYIu8OPlsYBZ348UnoqMMjbKpU32mo6T8666DY8le0ucVHc3NzT6KH9D7p1NbIpPaQMwY-FwhjHnwIQvg8i3HKLAu_OMtFHWDDQHVLQgPIJBkVW1Vphqt74aDmVkdDQs40yptL97PUkulIZfy715VcbzrP9kkGuUYVveYecEgFs8rYo_cDrt0hKzMnXIKq0nLFpcwsdJ8FklGM8SogHyc1ZCtp8FisPlOX6w8v_je95gN0PxHSWaYTmEEwFnQD1fEgpxq7Cje1AOvmwFxj4evOdC8hU1Shmx3TEFkIMbJfwzQPDwFkW3n9JrLdsgHmS1n3jnDQCEuV_XwildNw0rdV56ZPd9uGXYLv7MYwA3fxf-0-X4YU2xn3E3AxP2Vrt2bZWEz-vScu2XyVIIi0xXc494j4eeH6lvZ2SF8r5aHRo54ccv_oy9n17-17KmjPCAjeX3yFHYXQpnaNwDJVKWVeiUk_PAFiBfXSUp1QEqDrBz-zMLGK6VRJ6zRA3ojV4I47nlqPT456IiNMTTgrf7ZeSaupV_R5gkrN-YBp1URHiRH7FKGmUNvaNR0UvNNq3Fq_D2Qf9Fvch6NZ9wWaHIadVNnAPxVdI3T_UWzey6djEZBfSkHF6Cb77YVjx788YfuBYcYKveUmLJBuRSP2FuT45i9ufuuQZ3qLBcZ_pOGm9M0Os8M3R1yfmKOEGB0rFGdtzfGjHCimwOyyjdWJG1fsowE58FqMgvhUVbqOxriDQ3e59f06k9osUq0q1H9VtfPvwQw3Mg-zaxre5E-2BEOwdUqH4ltc2MXECkwk2nUuz9FSZ-RviK-ub1QyAC2423MRLiJVT-OmVNe2D3FaRet8yWB_ejAJK0RbLJCi1AlMcMPSa0gEmDUkuro_KclXqCm1et9uWqxlN8SM2gClt7I');
 		this.dropbox.score_appended_this_session = false;
 		document.addEventListener('keydown', (e) => this.handleKeydown(e));
+		this.username_input_rendered = false;
 		this.gameLoop();
 	}
 
@@ -322,29 +323,31 @@ class pBART {
 		        };
 		    }
 		} else if (this.game_state === GameState.USERNAME_INPUT) {
-		    content.innerHTML = `
-		        <h1 style="font-size: 36px; margin-bottom: 50px;">Enter Username</h1>
+		    // Only render once
+		    if (!this.username_input_rendered) {
+		        content.innerHTML = `
+		            <h1 style="font-size: 36px; margin-bottom: 50px;">Enter Username</h1>
+		            
+		            <input type="text" id="usernameInput" placeholder="Enter username" 
+		                style="font-size: 24px; padding: 15px; width: 300px; margin-bottom: 20px; border: 2px solid black; border-radius: 5px;"
+		                maxlength="20"
+		            />
+		            
+		            <br/>
+		            
+		            <button id="submitBtn" style="padding: 15px 30px; font-size: 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">
+		                Submit
+		            </button>
+		            
+		            <p style="font-size: 16px; color: #666; margin-top: 20px;">Or press ENTER on keyboard</p>
+		        `;
 		        
-		        <input type="text" id="usernameInput" placeholder="Enter username" 
-		            style="font-size: 24px; padding: 15px; width: 300px; margin-bottom: 20px; border: 2px solid black; border-radius: 5px;"
-		            maxlength="20"
-		        />
+		        this.username_input_rendered = true;
 		        
-		        <br/>
+		        const inputField = document.getElementById('usernameInput');
+		        const submitBtn = document.getElementById('submitBtn');
 		        
-		        <button id="submitBtn" style="padding: 15px 30px; font-size: 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">
-		            Submit
-		        </button>
-		        
-		        <p style="font-size: 16px; color: #666; margin-top: 20px;">Or press ENTER on keyboard</p>
-		    `;
-		    
-		    const inputField = document.getElementById('usernameInput');
-		    const submitBtn = document.getElementById('submitBtn');
-		    
-		    if (inputField) {
 		        inputField.focus();
-		        inputField.value = this.username_input;
 		        
 		        inputField.oninput = (e) => {
 		            this.username_input = e.target.value;
@@ -353,6 +356,7 @@ class pBART {
 		        submitBtn.onclick = () => {
 		            if (this.username_input.length > 0) {
 		                this.subject_id = this.username_input;
+		                this.username_input_rendered = false;
 		                this.reset_sequence();
 		            }
 		        };
