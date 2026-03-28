@@ -308,6 +308,7 @@ class pBART {
 		        welcomeBtn.onclick = () => {
 		            this.game_state = GameState.USERNAME_INPUT;
 		        };
+			}
 		} else if (this.game_state === GameState.USERNAME_INPUT) {
 		    content.innerHTML = `
 		        <h1 style="font-size: 36px; margin-bottom: 50px;">Enter Username</h1>
@@ -543,7 +544,7 @@ class pBART {
 		    `;
 		    
 		    content.innerHTML = leaderboardHTML;
-	}
+		}
 	}
 	gameLoop() {
 	    this.update();
