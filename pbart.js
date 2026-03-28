@@ -176,6 +176,7 @@ class pBART {
 	reset_sequence() {
 	    this.sequence_number += 1;
 		this.sequence_earned_tokens = 0; 
+		this.trial = new Trial();
 	    if (this.sequence_number >= this.max_sequences) {
 			
 	        this.session_complete = true;
@@ -439,7 +440,48 @@ class pBART {
 		            this.handle_hit();
 		        }
 		    });
-		} else if (this.game_state === GameState.WIN) {
+		} else if (this.game_state === GameState.REVEALING_OUTCOME) {
+		    const tokenColors = ['#FF6B6B', '#FF8E72', '#FFA500', '#FFD700', '#90EE90', '#87CEEB', '#6495ED', '#9370DB', '#FF1493', '#FFB6C1'];
+		    const revealedColor = tokenColors[this.trial.tokens_this_hit - 1] || '#888888';
+		
+		    const hitPosition = this.trial.hit_on_left ? 'left' : 'right';
+		
+		    content.innerHTML = `
+		        <div style="font-size: 14px; margin-bottom: 30px; text-align: left;">
+		            <div>Sequence: ${this.sequence_number}/${this.max_sequences}</div>
+		            <div>Total Tokens: ${this.total_accumulated_tokens}</div>
+		        </div>
+		        
+		        <!-- Central Annulus (SVG) -->
+		        <div style="width: 200px; height: 200px; margin: 30px auto;">
+		            <svg viewBox="0 0 200 200" style="width: 100%; height: 100%;">
+		                <circle cx="100" cy="100" r="95" fill="none" stroke="#ddd" stroke-width="8"/>
+		                <circle cx="100" cy="100" r="95" fill="none" stroke="#333" stroke-width="8" 
+		                        stroke-dasharray="${this.sequence_earned_tokens * 29.845} 596.9"
+		                        stroke-dashoffset="0"
+		                        transform="rotate(-90 100 100)"
+		                        stroke-linecap="round"/>
+		                <circle cx="100" cy="100" r="60" fill="#e8e8e8" stroke="black" stroke-width="2"/>
+		                <text x="100" y="115" font-size="60" font-weight="bold" text-anchor="middle">${this.sequence_earned_tokens}</text>
+		            </svg>
+		        </div>
+		        
+		        <!-- Revealed token circle -->
+		        <div style="display: flex; justify-content: space-around; margin: 30px 0;">
+		            ${hitPosition === 'left' ? `
+		                <div style="text-align: center;">
+		                    <div style="width: 120px; height: 120px; border-radius: 50%; background-color: ${revealedColor}; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; border: 3px solid black; color: white;">+${this.trial.tokens_this_hit}</div>
+		                </div>
+		                <div style="width: 120px; height: 120px;"></div>
+		            ` : `
+		                <div style="width: 120px; height: 120px;"></div>
+		                <div style="text-align: center;">
+		                    <div style="width: 120px; height: 120px; border-radius: 50%; background-color: ${revealedColor}; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; border: 3px solid black; color: white;">+${this.trial.tokens_this_hit}</div>
+		                </div>
+		            `}
+		        </div>
+		    `;
+		}else if (this.game_state === GameState.WIN) {
 			if (this.session_complete) {
 				content.innerHTML = `
 					<h1 style="font-size: 48px; color: green; margin-bottom: 30px;">Session Complete!</h1>
