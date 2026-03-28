@@ -324,11 +324,39 @@ class pBART {
 		} else if (this.game_state === GameState.USERNAME_INPUT) {
 		    content.innerHTML = `
 		        <h1 style="font-size: 36px; margin-bottom: 50px;">Enter Username</h1>
-		        <div style="font-size: 24px; margin-bottom: 30px; padding: 20px; border: 2px solid black; min-height: 40px;">
-		            ${this.username_input}
-		        </div>
-		        <p style="font-size: 16px; color: #666;">Type your username and press ENTER</p>
+		        
+		        <input type="text" id="usernameInput" placeholder="Enter username" 
+		            style="font-size: 24px; padding: 15px; width: 300px; margin-bottom: 20px; border: 2px solid black; border-radius: 5px;"
+		            maxlength="20"
+		        />
+		        
+		        <br/>
+		        
+		        <button id="submitBtn" style="padding: 15px 30px; font-size: 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">
+		            Submit
+		        </button>
+		        
+		        <p style="font-size: 16px; color: #666; margin-top: 20px;">Or press ENTER on keyboard</p>
 		    `;
+		    
+		    const inputField = document.getElementById('usernameInput');
+		    const submitBtn = document.getElementById('submitBtn');
+		    
+		    if (inputField) {
+		        inputField.focus();
+		        inputField.value = this.username_input;
+		        
+		        inputField.oninput = (e) => {
+		            this.username_input = e.target.value;
+		        };
+		        
+		        submitBtn.onclick = () => {
+		            if (this.username_input.length > 0) {
+		                this.subject_id = this.username_input;
+		                this.reset_sequence();
+		            }
+		        };
+		    }
 		} else if (this.game_state === GameState.WAITING_FOR_CHOICE) {
 			// Randomize positions each trial
 			if (!this.trial.positions_set) {
