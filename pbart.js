@@ -326,27 +326,32 @@ class pBART {
 		    content.innerHTML = `
 		        <h1 style="font-size: 36px; margin-bottom: 50px;">Enter Username</h1>
 		        
-		        <div style="font-size: 24px; margin-bottom: 30px; padding: 20px; border: 2px solid black; min-height: 40px; background-color: #f0f0f0; border-radius: 5px;">
-		            ${this.username_input}
-		            <span style="animation: blink 1s infinite;">|</span>
-		        </div>
+		        <input type="text" id="usernameInput" placeholder="Enter username" 
+		            style="font-size: 24px; padding: 15px; width: 80%; max-width: 400px; margin-bottom: 20px; border: 2px solid black; border-radius: 5px;"
+		            maxlength="20"
+		            autocomplete="off"
+		        />
+		        
+		        <br/>
 		        
 		        <button id="submitBtn" style="padding: 15px 30px; font-size: 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">
 		            Submit
 		        </button>
 		        
-		        <p style="font-size: 16px; color: #666; margin-top: 20px;">Type username and tap Submit or press ENTER</p>
-		        
-		        <style>
-		            @keyframes blink {
-		                0%, 50% { opacity: 1; }
-		                51%, 100% { opacity: 0; }
-		            }
-		        </style>
+		        <p style="font-size: 16px; color: #666; margin-top: 20px;">Type username and tap Submit</p>
 		    `;
 		    
+		    const inputField = document.getElementById('usernameInput');
 		    const submitBtn = document.getElementById('submitBtn');
-		    if (submitBtn && !submitBtn.onclick) {
+		    
+		    if (inputField) {
+		        inputField.focus();
+		        inputField.value = this.username_input;  // Keep current value
+		        
+		        inputField.oninput = (e) => {
+		            this.username_input = e.target.value;
+		        };
+		        
 		        submitBtn.onclick = () => {
 		            if (this.username_input.length > 0) {
 		                this.subject_id = this.username_input;
