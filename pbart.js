@@ -509,6 +509,12 @@ class pBART {
 					<div style="font-size: 24px; margin: 20px 0;">+${this.trial.earned_tokens} tokens</div>
 					<p style="font-size: 18px; margin-top: 20px;">Press SPACE to continue</p>
 				`;
+				const nextBtn = document.getElementById('nextTrialBtn');
+		        if (nextBtn && !nextBtn.onclick) {
+		            nextBtn.onclick = () => {
+		                this.game_state = GameState.INTER_SEQUENCE_DELAY;
+		                this.timer = 0;
+		            };
 			}
 		} else if (this.game_state === GameState.BUST) {
 			// Calculate overage (tokens beyond 20)
