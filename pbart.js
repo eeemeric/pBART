@@ -47,7 +47,6 @@ class pBART {
 		this.token_weights = [1, 1, 1, 1, 1, 1, 1, 1, 1, 4];
 		this.dropbox = new DropboxHandler('sl.u.AGbNqibVDjAq8bbTT7AqAhVbiqBaLlHp2xoNE9240PfLnBINoIYgVgC8a9W-S8uKFWNzFRXrczMFNdSuHAekLT6RvZ4prMqTTCkVTwI33c0_pcdpLuQFaLip6h5n2Z0K1PVjzN9Foh0awxUF0RsUAcRKyZWH9C-O640rkgk96d-DGqu-YuMoHyNfQoi0Mel2NnpOgIOGiyufT1WcNFDzekejw-Y5-IfUTLsJKDrz_WZzbsswpC7WzUyVh32VXhapKTAV-KSrAksjPuaeCg_e-nC9tH6LPRn64GiftNkCMk-cjKlFJdTPvRDzLBFR4Kns3lVaNOcCg-4C0ZYGjwlLTRWIoOI4ecnGzayMkS3E9-pxQAzbf28OKWKlsgKuHPFzram6FxSCXwUIsGL6CljQkxLYxBE6wEsGJeLI6rr1jMfoKI-kPvIV3Dm_Jqfn3pG38YWqT_jDbyyS7C_30K3c_V4JM-Dz4d8T9CTv8soVDWTFfGGfboboRRUGk1JckEvD2g6MxPIqi8s0gjkp4-OIWEL4dmUVMs59Sk5ZQ3Bk1xs4lbTPJckEL6ZZVVPxdK2fcPC-zPRnJvwKBBc7HuLMgfnN8xCdb3krV7z8fEO_8mw0kZ6ewYnAm5ethRzaSLFJce1ME046V_KdzjQyxJGJ7n8HgbO-0Gn1CjmRzLbJSI7Hc0VTNAvhOXzXNldpar16mzDmxy4QiliBUpDNa_ABqJuoAMkDuhK8RZJNQbmkiuRJvsyj8iMkna2CcsfNtaz_PIOyQ4hXiIW6lccbHeqmZ6bK2TS9lPow3AYK-JDFdZyLdKCiO-hOOzAiz4zGE1I5SsPBzOkWmMAPQO7v3CLPc3eNheJeia4PgQLDrTus7UVsQ44LREgcIftixvdVOngDt9ydAYlw8VDHWVG294sbUtvi5AfVEQFz7xy7GnJRieHGGuZ3HMP7qUCh1Uhxh8-0RQECtmQfErLI83mt_vwFbsDoKD88PnMKQsEDo4KZZ5GDoFxVZUGM0Veb0aNXlmIuBx29hOKrHQjoeN5Pr-1A33ycIxWJ-kTJXAhtl3V5nzVMDx0Th7VLqu2ZhiUQNLWAhMjrw1THib_GDDgPQaB83T0jrr7T_5dAMgDiAIEK4xZ6R-eW75ZID8PT0VuwfeV1hgdG2HDRp_3Pko8MQSLTcmgDyCt-NRv6CrH-xSwQ7KKU9SjcI_fwcBvQA45VrPazzPvKLdOdzX6aq-L-WSNA5LQb_iNqCMACckXGF_cne4VGlsbJ4DNHhZaI4LKAjUxR_xM');
 		this.dropbox.score_appended_this_session = false;
-		document.addEventListener('keydown', (e) => this.handleKeydown(e));
 		this.username_input_rendered = false;
 		this.gameLoop();
 	}
@@ -81,67 +80,6 @@ class pBART {
 	    this.timer = 0;
 	}
 	
-	async handleKeydown(e) {
-		if (this.game_state === GameState.WELCOME) {
-		    if (e.key === ' ') {
-		        e.preventDefault();
-		        this.game_state = GameState.USERNAME_INPUT;
-		    } else if (e.key.toLowerCase() === 'l') {
-		        e.preventDefault();
-		        this.showLeaderboard();
-		    }
-		} else if (this.game_state === GameState.USERNAME_INPUT) {
-		    if (e.key === 'Enter') {
-		        e.preventDefault();
-		        if (this.username_input.length > 0) {
-		            this.subject_id = this.username_input;
-		            this.reset_sequence();
-		        }
-		    } else if (e.key === 'Backspace') {
-		        e.preventDefault();
-		        this.username_input = this.username_input.slice(0, -1);
-		    } else if (e.key.length === 1 && this.username_input.length < 20) {
-		        this.username_input += e.key;
-		    }
-		} else if (this.game_state === GameState.WAITING_FOR_CHOICE) {
-			if (e.key === 'ArrowLeft') {
-				e.preventDefault();
-				if (this.trial.hit_on_left) {
-					this.handle_hit();
-				} else {
-					this.handle_stay();
-				}
-			} else if (e.key === 'ArrowRight') {
-				e.preventDefault();
-				if (this.trial.hit_on_left) {
-					this.handle_stay();
-				} else {
-					this.handle_hit();
-				}
-			}
-		} else if ([GameState.WIN, GameState.BUST].includes(this.game_state)) {
-			if (e.key === ' ') {
-				e.preventDefault();
-				this.game_state = GameState.INTER_SEQUENCE_DELAY;
-				this.timer = 0;
-			}
-		} else if (this.game_state === GameState.LEADERBOARD) {
-		    if (e.key === 'Escape') {
-		        e.preventDefault();
-		        this.game_state = GameState.WELCOME;
-		    }
-		}
-		// ESC to return to welcome from any state
-		if (e.key === 'Escape') {
-		    e.preventDefault();
-			// If in game, save partial session before returning
-		    if ([GameState.WAITING_FOR_CHOICE, GameState.REVEALING_OUTCOME, GameState.WIN, GameState.BUST].includes(this.game_state)) {
-		        this.save_partial_session();
-		    }
-		    this.game_state = GameState.WELCOME;
-		    this.timer = 0;
-		}
-	}
 
 	handle_hit() {
 		this.trial.choice = 'HIT';
@@ -507,6 +445,7 @@ class pBART {
 					</div>
 					<p style="font-size: 18px; margin-top: 30px;">Saved to Dropbox!</p>
 				`;
+				
 			} else {
 			    content.innerHTML = `
 			        <h1 style="font-size: 48px; color: green; margin-bottom: 30px;">WIN!</h1>
@@ -534,7 +473,9 @@ class pBART {
 			            Next Trial
 			        </button>
 			        
-			        <p style="font-size: 18px; margin-top: 20px; color: #666;">Or press SPACE</p>
+			        <button id="quitBtn" style="padding: 15px 30px; font-size: 20px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px; margin-left: 10px;">
+					    Quit
+					</button>
 			    `;
 			    
 			    const nextBtn = document.getElementById('nextTrialBtn');
@@ -544,6 +485,13 @@ class pBART {
 			            this.timer = 0;
 			        };
 			    }
+				const quitBtn = document.getElementById('quitBtn');
+				if (quitBtn && !quitBtn.onclick) {
+				    quitBtn.onclick = () => {
+				        this.save_partial_session();
+				        this.game_state = GameState.WELCOME;
+				    };
+				}
 			}
 		} else if (this.game_state === GameState.BUST) {
 		    // Calculate overage (tokens beyond 20)
@@ -576,7 +524,9 @@ class pBART {
 		            Next Trial
 		        </button>
 		        
-		        <p style="font-size: 18px; margin-top: 20px; color: #666;">Or press SPACE</p>
+		        <button id="quitBtn" style="padding: 15px 30px; font-size: 20px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px; margin-left: 10px;">
+				    Quit
+				</button>
 		    `;
 		    
 		    const nextBtn = document.getElementById('nextTrialBtn');
