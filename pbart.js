@@ -40,7 +40,7 @@ class pBART {
 		this.total_accumulated_tokens = 0;
 		this.subject_id = '';
 		this.username_input = '';
-		this.max_sequences = 10;
+		this.max_sequences = 5;
 		this.session_complete = false;
 		this.trial_history = [];
 		this.session_already_saved = false;
