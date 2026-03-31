@@ -99,50 +99,49 @@ class pBART {
                     this.showLeaderboard();
                 };
             }
+        } else if (this.game_state === GameState.USERNAME_INPUT) {
+            content.innerHTML = `
+                <h1 style="font-size: 36px; margin-bottom: 50px;">Enter Username</h1>
+                
+                <input type="text" id="usernameInput" placeholder="Enter username" 
+                    style="font-size: 24px; padding: 15px; width: 80%; max-width: 400px; margin-bottom: 20px; border: 2px solid black; border-radius: 5px;"
+                    maxlength="20"
+                    autocomplete="off"
+                />
+                
+                <br/>
+                
+                <button id="submitBtn" style="padding: 15px 30px; font-size: 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">
+                    Submit
+                </button>
+                
+                <p style="font-size: 16px; color: #666; margin-top: 20px;">Click in box and type username</p>
+            `;
+            
+            const inputField = document.getElementById('usernameInput');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (inputField && !inputField.data_set) {
+                inputField.data_set = true;
+                inputField.focus();
+                inputField.value = this.username_input;
+                
+                inputField.oninput = (e) => {
+                    this.username_input = e.target.value;
+                };
+            }
+            
+            if (submitBtn && !submitBtn.data_set) {
+                submitBtn.data_set = true;
+                submitBtn.onclick = () => {
+                    if (this.username_input.length > 0) {
+                        this.subject_id = this.username_input;
+                        this.reset_sequence();
+                    }
+                };
+            }
         }
-    } else if (this.game_state === GameState.USERNAME_INPUT) {
-        content.innerHTML = `
-            <h1 style="font-size: 36px; margin-bottom: 50px;">Enter Username</h1>
-            
-            <input type="text" id="usernameInput" placeholder="Enter username" 
-                style="font-size: 24px; padding: 15px; width: 80%; max-width: 400px; margin-bottom: 20px; border: 2px solid black; border-radius: 5px;"
-                maxlength="20"
-                autocomplete="off"
-            />
-            
-            <br/>
-            
-            <button id="submitBtn" style="padding: 15px 30px; font-size: 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">
-                Submit
-            </button>
-            
-            <p style="font-size: 16px; color: #666; margin-top: 20px;">Click in box and type username</p>
-        `;
-        
-        const inputField = document.getElementById('usernameInput');
-        const submitBtn = document.getElementById('submitBtn');
-        
-        if (inputField && !inputField.data_set) {
-            inputField.data_set = true;
-            inputField.focus();
-            inputField.value = this.username_input;
-            
-            inputField.oninput = (e) => {
-                this.username_input = e.target.value;
-            };
-        }
-        
-        if (submitBtn && !submitBtn.data_set) {
-            submitBtn.data_set = true;
-            submitBtn.onclick = () => {
-                if (this.username_input.length > 0) {
-                    this.subject_id = this.username_input;
-                    this.reset_sequence();
-                }
-            };
-        }
-    }
-
+    
     showLeaderboard() {
         this.leaderboard_data = this.loadScoresLocally();
         this.game_state = GameState.LEADERBOARD;
