@@ -83,6 +83,9 @@ class pBART {
                 <button id="leaderboardBtn" style="padding: 20px 40px; font-size: 28px; background-color: #FFD700; color: black; border: none; border-radius: 10px; cursor: pointer; margin-top: 20px; margin-left: 10px;">
                     Leaderboard
                 </button>
+                <button id="startBtn" style="..." onclick="alert('clicked!')">
+                    Start Game
+                </button>
             `;
 
             // Debug: Check if button exists
