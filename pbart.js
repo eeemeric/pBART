@@ -77,11 +77,11 @@ class pBART {
                     </ul>
                 </div>
                 
+                <button id="startBtn" style="padding: 20px 40px; font-size: 28px; background-color: #007bff; color: white; border: none; border-radius: 10px; cursor: pointer; margin-top: 30px;">
+                    Start Game
+                </button>
                 <button id="leaderboardBtn" style="padding: 20px 40px; font-size: 28px; background-color: #FFD700; color: black; border: none; border-radius: 10px; cursor: pointer; margin-top: 20px; margin-left: 10px;">
                     Leaderboard
-                </button>
-                <button id="startBtn" style="..." onclick="alert('clicked!')">
-                    Start Game
                 </button>
             `;
 
@@ -92,13 +92,13 @@ class pBART {
             //     console.log('Start button HTML:', startBtn?.outerHTML);
             // }, 0);
             
-            // const startBtn = document.getElementById('startBtn');
-            // if (startBtn) {
-            //     startBtn.onclick = () => {
-            //         console.log("Button clicked!");
-            //         this.game_state = GameState.USERNAME_INPUT;
-            //     };
-            // }
+            const startBtn = document.getElementById('startBtn');
+            if (startBtn) {
+                startBtn.onclick = () => {
+                    console.log("Button clicked!");
+                    this.game_state = GameState.USERNAME_INPUT;
+                };
+            }
             
             const leaderboardBtn = document.getElementById('leaderboardBtn');
             if (leaderboardBtn && !leaderboardBtn.data_set) {
