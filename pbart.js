@@ -24,6 +24,7 @@ class Trial {
 
 class pBART {
     constructor() {
+        window.pbart_instance = this;
         this.createUI();
         this.game_state = GameState.WELCOME;
         this.timer = 0;
@@ -77,28 +78,15 @@ class pBART {
                     </ul>
                 </div>
                 
-                <button id="startBtn" style="padding: 20px 40px; font-size: 28px; background-color: #007bff; color: white; border: none; border-radius: 10px; cursor: pointer; margin-top: 30px;">
+                <button id="startBtn" style="padding: 20px 40px; font-size: 28px; background-color: #007bff; color: white; border: none; border-radius: 10px; cursor: pointer; margin-top: 30px;" onclick="window.pbart_instance.handleStartClick()">
                     Start Game
                 </button>
+
                 <button id="leaderboardBtn" style="padding: 20px 40px; font-size: 28px; background-color: #FFD700; color: black; border: none; border-radius: 10px; cursor: pointer; margin-top: 20px; margin-left: 10px;">
                     Leaderboard
                 </button>
             `;
 
-            // // Debug: Check if button exists
-            // setTimeout(() => {
-            //     const startBtn = document.getElementById('startBtn');
-            //     console.log('Start button exists?', startBtn);
-            //     console.log('Start button HTML:', startBtn?.outerHTML);
-            // }, 0);
-            
-            const startBtn = document.getElementById('startBtn');
-            if (startBtn) {
-                startBtn.onclick = () => {
-                    console.log("Button clicked!");
-                    this.game_state = GameState.USERNAME_INPUT;
-                };
-            }
             
             const leaderboardBtn = document.getElementById('leaderboardBtn');
             if (leaderboardBtn && !leaderboardBtn.data_set) {
@@ -151,6 +139,11 @@ class pBART {
         }
     }
 
+
+    handleStartClick() {
+        console.log("Start clicked!");
+        this.game_state = GameState.USERNAME_INPUT;
+    }
     
     showLeaderboard() {
         this.leaderboard_data = this.loadScoresLocally();
