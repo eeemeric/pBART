@@ -107,33 +107,20 @@ class pBART {
                     
                     <br/>
                     
-                    <button id="submitBtn" style="padding: 15px 30px; font-size: 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;">
+                    <button style="padding: 15px 30px; font-size: 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;" onclick="window.pbart_instance.submitUsername()">
                         Submit
                     </button>
                     
                     <p style="font-size: 16px; color: #666; margin-top: 20px;">Click in box and type username</p>
                 `;
                 
+                // Focus and sync input
                 const inputField = document.getElementById('usernameInput');
-                const submitBtn = document.getElementById('submitBtn');
-                
-                if (inputField && !inputField.data_set) {
-                    inputField.data_set = true;
+                if (inputField) {
                     inputField.focus();
                     inputField.value = this.username_input;
-                    
                     inputField.oninput = (e) => {
                         this.username_input = e.target.value;
-                    };
-                }
-                
-                if (submitBtn && !submitBtn.data_set) {
-                    submitBtn.data_set = true;
-                    submitBtn.onclick = () => {
-                        if (this.username_input.length > 0) {
-                            this.subject_id = this.username_input;
-                            this.reset_sequence();
-                        }
                     };
                 }
             }
