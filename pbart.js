@@ -86,12 +86,10 @@ class pBART {
             `;
             
             const startBtn = document.getElementById('startBtn');
-            if (startBtn && !startBtn.data_set) {
-                startBtn.data_set = true;
+            if (startBtn) {
                 startBtn.onclick = () => {
-                    console.log("DEBUGG: Button clicked!");
+                    console.log("Button clicked!");
                     this.game_state = GameState.USERNAME_INPUT;
-                    console.log("DEBUGG: --> username input");
                 };
             }
             
