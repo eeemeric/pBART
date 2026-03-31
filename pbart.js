@@ -40,12 +40,16 @@ class pBART {
     }
 
     createUI() {
-        const container = document.body;
-        container.innerHTML = `
-            <div id="app" style="width: 100vw; height: 100vh; display: flex; align-items: center; justify-content: center; background-color: #d3d3d3; font-family: Arial, sans-serif;">
-                <div id="content" style="text-align: center; width: 90%; max-width: 800px;"></div>
-            </div>
-        `;
+        const app = document.getElementById('app');
+        app.style.width = '100vw';
+        app.style.height = '100vh';
+        app.style.display = 'flex';
+        app.style.alignItems = 'center';
+        app.style.justifyContent = 'center';
+        app.style.backgroundColor = '#d3d3d3';
+        app.style.fontFamily = 'Arial, sans-serif';
+        
+        app.innerHTML = `<div id="content" style="text-align: center; width: 90%; max-width: 800px;"></div>`;
     }
 
     update() {
