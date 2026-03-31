@@ -155,6 +155,22 @@ class pBART {
     }
 
     
+    reset_sequence() {
+        this.sequence_number += 1;
+        this.sequence_earned_tokens = 0;
+        
+        if (this.sequence_number > this.max_sequences) {
+            this.game_state = GameState.FINAL_LEADERBOARD;
+            return;
+        }
+        
+        this.trial = new Trial();
+        this.trial.sequence_number = this.sequence_number;
+        this.game_state = GameState.WAITING_FOR_CHOICE;
+        this.timer = 0;
+    }
+    
+        
     gameLoop() {
         this.update();
         this.draw();
