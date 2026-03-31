@@ -30,17 +30,17 @@ class pBART {
         const content = document.getElementById('content');
         content.innerHTML = '<button onclick="alert(\'hello\')">Test Button</button>';
         
-        this.game_state = GameState.WELCOME;
-        this.timer = 0;
-        this.sequence_number = 0;
-        this.total_accumulated_tokens = 0;
-        this.subject_id = '';
-        this.username_input = '';
-        this.max_sequences = 5;
-        this.trial = new Trial();
-        this.sequence_earned_tokens = 0;
-        this.leaderboard_data = [];
-        this.gameLoop();
+        // this.game_state = GameState.WELCOME;
+        // this.timer = 0;
+        // this.sequence_number = 0;
+        // this.total_accumulated_tokens = 0;
+        // this.subject_id = '';
+        // this.username_input = '';
+        // this.max_sequences = 5;
+        // this.trial = new Trial();
+        // this.sequence_earned_tokens = 0;
+        // this.leaderboard_data = [];
+        // this.gameLoop();
     }
 
     createUI() {
