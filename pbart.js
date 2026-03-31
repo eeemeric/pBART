@@ -77,9 +77,6 @@ class pBART {
                     </ul>
                 </div>
                 
-                <button id="startBtn" style="padding: 20px 40px; font-size: 28px; background-color: #007bff; color: white; border: none; border-radius: 10px; cursor: pointer; margin-top: 30px;">
-                    Start Game
-                </button>
                 <button id="leaderboardBtn" style="padding: 20px 40px; font-size: 28px; background-color: #FFD700; color: black; border: none; border-radius: 10px; cursor: pointer; margin-top: 20px; margin-left: 10px;">
                     Leaderboard
                 </button>
