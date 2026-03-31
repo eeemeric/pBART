@@ -78,7 +78,7 @@ class pBART {
                     </ul>
                 </div>
                 
-                <button id="startBtn" style="padding: 20px 40px; font-size: 28px; background-color: #007bff; color: white; border: none; border-radius: 10px; cursor: pointer; margin-top: 30px;" onclick="window.pbart_instance.handleStartClick()">
+                <button onclick="console.log('test click')">
                     Start Game
                 </button>
 
