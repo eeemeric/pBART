@@ -61,8 +61,11 @@ class pBART {
 
     draw() {
         const content = document.getElementById('content');
+            
+        // Only re-render if state changed
         if (this.game_state !== this.previous_state) {
-        this.previous_state = this.game_state;        
+            this.previous_state = this.game_state;
+                
             if (this.game_state === GameState.WELCOME) {
                 content.innerHTML = `
                     <h1 style="font-size: 56px; margin-bottom: 30px;">🎮 Balloon Analogue Risk Task</h1>
@@ -85,23 +88,13 @@ class pBART {
                         </ul>
                     </div>
                     
-                    <button onclick="console.log('test click')">
+                    <button style="padding: 20px 40px; font-size: 28px; background-color: #007bff; color: white; border: none; border-radius: 10px; cursor: pointer; margin-top: 30px;" onclick="window.pbart_instance.goToUsername()">
                         Start Game
                     </button>
-
-                    <button id="leaderboardBtn" style="padding: 20px 40px; font-size: 28px; background-color: #FFD700; color: black; border: none; border-radius: 10px; cursor: pointer; margin-top: 20px; margin-left: 10px;">
+                    <button style="padding: 20px 40px; font-size: 28px; background-color: #FFD700; color: black; border: none; border-radius: 10px; cursor: pointer; margin-top: 20px; margin-left: 10px;" onclick="window.pbart_instance.showLeaderboard()">
                         Leaderboard
                     </button>
                 `;
-
-                
-                const leaderboardBtn = document.getElementById('leaderboardBtn');
-                if (leaderboardBtn && !leaderboardBtn.data_set) {
-                    leaderboardBtn.data_set = true;
-                    leaderboardBtn.onclick = () => {
-                        this.showLeaderboard();
-                    };
-                }
             } else if (this.game_state === GameState.USERNAME_INPUT) {
                 content.innerHTML = `
                     <h1 style="font-size: 36px; margin-bottom: 50px;">Enter Username</h1>
@@ -147,12 +140,15 @@ class pBART {
         }
     }
 
-    handleStartClick() {
-        console.log("Start clicked!");
-        this.game_state = GameState.USERNAME_INPUT;
-        console.log("New game_state:", this.game_state);
-    }
     
+    goToUsername() {
+        this.game_state = GameState.USERNAME_INPUT;
+    }
+
+    showLeaderboard() {
+        this.leaderboard_data = this.loadScoresLocally();
+        this.game_state = GameState.LEADERBOARD;
+    }
     showLeaderboard() {
         this.leaderboard_data = this.loadScoresLocally();
         this.game_state = GameState.LEADERBOARD;
