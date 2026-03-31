@@ -143,6 +143,7 @@ class pBART {
     handleStartClick() {
         console.log("Start clicked!");
         this.game_state = GameState.USERNAME_INPUT;
+        console.log("New game_state:", this.game_state);
     }
     
     showLeaderboard() {
