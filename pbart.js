@@ -88,20 +88,20 @@ class pBART {
                 </button>
             `;
 
-            // Debug: Check if button exists
-            setTimeout(() => {
-                const startBtn = document.getElementById('startBtn');
-                console.log('Start button exists?', startBtn);
-                console.log('Start button HTML:', startBtn?.outerHTML);
-            }, 0);
+            // // Debug: Check if button exists
+            // setTimeout(() => {
+            //     const startBtn = document.getElementById('startBtn');
+            //     console.log('Start button exists?', startBtn);
+            //     console.log('Start button HTML:', startBtn?.outerHTML);
+            // }, 0);
             
-            const startBtn = document.getElementById('startBtn');
-            if (startBtn) {
-                startBtn.onclick = () => {
-                    console.log("Button clicked!");
-                    this.game_state = GameState.USERNAME_INPUT;
-                };
-            }
+            // const startBtn = document.getElementById('startBtn');
+            // if (startBtn) {
+            //     startBtn.onclick = () => {
+            //         console.log("Button clicked!");
+            //         this.game_state = GameState.USERNAME_INPUT;
+            //     };
+            // }
             
             const leaderboardBtn = document.getElementById('leaderboardBtn');
             if (leaderboardBtn && !leaderboardBtn.data_set) {
