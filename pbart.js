@@ -53,7 +53,8 @@ class pBART {
 
     draw() {
         const content = document.getElementById('content');
-
+        console.log('Draw called, game_state:', this.game_state);  // Debug every frame
+        
         if (this.game_state === GameState.WELCOME) {
             content.innerHTML = `
                 <h1 style="font-size: 56px; margin-bottom: 30px;">🎮 Balloon Analogue Risk Task</h1>
