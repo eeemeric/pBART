@@ -89,6 +89,7 @@ class pBART {
             if (startBtn && !startBtn.data_set) {
                 startBtn.data_set = true;
                 startBtn.onclick = () => {
+                    console.log("DEBUGG: Button clicked!");
                     this.game_state = GameState.USERNAME_INPUT;
                     console.log("DEBUGG: --> username input");
                 };
