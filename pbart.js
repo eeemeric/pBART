@@ -141,21 +141,26 @@ class pBART {
                 };
             }
         }
+    }
+
     
     showLeaderboard() {
         this.leaderboard_data = this.loadScoresLocally();
         this.game_state = GameState.LEADERBOARD;
     }
 
+    
     loadScoresLocally() {
         return JSON.parse(localStorage.getItem('pbart_leaderboard') || '[]');
     }
 
+    
     gameLoop() {
         this.update();
         this.draw();
         requestAnimationFrame(() => this.gameLoop());
     }
+    
 }
 
 window.addEventListener('load', () => {
