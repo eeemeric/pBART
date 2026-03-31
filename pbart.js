@@ -89,6 +89,7 @@ class pBART {
                 startBtn.data_set = true;
                 startBtn.onclick = () => {
                     this.game_state = GameState.USERNAME_INPUT;
+                    console.log("DEBUGG: --> username input");
                 };
             }
             
