@@ -26,6 +26,10 @@ class pBART {
     constructor() {
         window.pbart_instance = this;
         this.createUI();
+        // Simple test
+        const content = document.getElementById('content');
+        content.innerHTML = '<button onclick="alert(\'hello\')">Test Button</button>';
+        
         this.game_state = GameState.WELCOME;
         this.timer = 0;
         this.sequence_number = 0;
