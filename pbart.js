@@ -132,6 +132,15 @@ class pBART {
         this.game_state = GameState.USERNAME_INPUT;
     }
 
+
+    submitUsername() {
+        if (this.username_input.length > 0) {
+            this.subject_id = this.username_input;
+            this.reset_sequence();
+        }
+    }
+
+    
     showLeaderboard() {
         this.leaderboard_data = this.loadScoresLocally();
         this.game_state = GameState.LEADERBOARD;
