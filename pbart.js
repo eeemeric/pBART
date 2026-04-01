@@ -7,6 +7,7 @@ const GameState = {
     INTER_TRIAL_DELAY: 'INTER_TRIAL_DELAY',
     WIN: 'WIN',
     BUST: 'BUST',
+    LEADERBOARD: 'LEADERBOARD',
     FINAL_LEADERBOARD: 'FINAL_LEADERBOARD'
 };
 
@@ -109,6 +110,10 @@ class pBART {
                     
                     <button style="padding: 20px 40px; font-size: 28px; background-color: #007bff; color: white; border: none; border-radius: 10px; cursor: pointer; margin-top: 30px;" onclick="window.pbart_instance.goToUsername()">
                         Start Game
+                    </button>
+
+                    <button style="padding: 20px 40px; font-size: 28px; background-color: #FFD700; color: black; border: none; border-radius: 10px; cursor: pointer; margin-top: 20px; margin-left: 10px;" onclick="window.pbart_instance.goToLeaderboard()">
+                        Leaderboard
                     </button>
                 `;
             } else if (this.game_state === GameState.USERNAME_INPUT) {
@@ -247,6 +252,49 @@ class pBART {
                     this.trial.sequence_number = this.sequence_number;
                 }
                 content.innerHTML = ``;
+            } else if (this.game_state === GameState.LEADERBOARD) {
+                let leaderboardHTML = `
+                    <h1 style="font-size: 48px; margin-bottom: 40px;">🏆 Leaderboard</h1>
+                    
+                    <table style="width: 100%; max-width: 700px; margin: 0 auto; border-collapse: collapse; font-size: 18px;">
+                        <thead>
+                            <tr style="background-color: #007bff; color: white;">
+                                <th style="padding: 15px; text-align: left; border: 2px solid #333;">Rank</th>
+                                <th style="padding: 15px; text-align: left; border: 2px solid #333;">Player</th>
+                                <th style="padding: 15px; text-align: center; border: 2px solid #333;">Tokens</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                
+                if (this.leaderboard_data && this.leaderboard_data.length > 0) {
+                    this.leaderboard_data.slice(0, 10).forEach((entry, index) => {
+                        leaderboardHTML += `
+                            <tr style="background-color: ${index % 2 === 0 ? '#f9f9f9' : 'white'};">
+                                <td style="padding: 15px; border: 1px solid #ddd;">${index + 1}</td>
+                                <td style="padding: 15px; border: 1px solid #ddd;">${entry.subject_id}</td>
+                                <td style="padding: 15px; text-align: center; border: 1px solid #ddd;">${entry.total_tokens}</td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    leaderboardHTML += `
+                        <tr>
+                            <td colspan="3" style="padding: 20px; text-align: center;">No scores yet</td>
+                        </tr>
+                    `;
+                }
+                
+                leaderboardHTML += `
+                        </tbody>
+                    </table>
+                    
+                    <button style="padding: 15px 30px; font-size: 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;" onclick="window.pbart_instance.goToWelcome()">
+                        Back to Welcome
+                    </button>
+                `;
+                
+                content.innerHTML = leaderboardHTML;
             } else if (this.game_state === GameState.FINAL_LEADERBOARD) {
                 content.innerHTML = `
                     <h1 style="font-size: 48px; margin-bottom: 40px;">🏆 Leaderboard</h1>
@@ -323,8 +371,22 @@ class pBART {
     }
 
     quit_to_leaderboard() {
+        await this.save_session();
         this.game_state = GameState.FINAL_LEADERBOARD;
     }
+
+
+    async goToLeaderboard() {
+        const scores = await this.dropbox.loadLeaderboard();
+        this.leaderboard_data = scores;
+        this.game_state = GameState.LEADERBOARD;
+    }
+
+
+    goToWelcome() {
+        this.game_state = GameState.WELCOME;
+    }
+    
 
     reset_sequence() {
         this.sequence_number += 1;
@@ -342,6 +404,18 @@ class pBART {
         this.timer = 0;
     }
 
+
+    async save_session() {
+        const sessionData = {
+            subject_id: this.subject_id,
+            total_accumulated_tokens: this.total_accumulated_tokens,
+            total_sequences: this.sequence_number
+        };
+        
+        await this.dropbox.saveSessionData(sessionData);
+    }
+
+    
     restart_game() {
         this.game_state = GameState.WELCOME;
         this.username_input = '';
