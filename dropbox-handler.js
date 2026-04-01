@@ -39,13 +39,19 @@ class DropboxHandler {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${this.accessToken}`,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
                 },
                 body: JSON.stringify({
                     path: '/Apps/pBART_data',
                     recursive: false
                 })
             });
+            
+            if (!response.ok) {
+                console.error('Dropbox error:', response.status, response.statusText);
+                return [];
+            }
             
             const data = await response.json();
             const files = data.entries || [];
