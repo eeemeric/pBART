@@ -1,4 +1,3 @@
-// Dropbox API Handler
 class DropboxHandler {
     constructor(accessToken) {
         this.accessToken = accessToken;
@@ -9,7 +8,7 @@ class DropboxHandler {
         const filename = `pbart_session_${sessionData.subject_id}_${timestamp}.json`;
         const path = `/Apps/pBART_data/${filename}`;
         
-        try {            
+        try {
             const response = await fetch('https://content.dropboxapi.com/2/files/upload', {
                 method: 'POST',
                 headers: {
@@ -24,18 +23,17 @@ class DropboxHandler {
                 body: JSON.stringify(sessionData)
             });
             
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error('DEBUG: Dropbox error response:', errorText);
+            if (response.ok) {
+                console.log('Session saved to Dropbox!');
             } else {
-                console.log('DEBUG: Successfully saved to Dropbox!');
+                console.error('Error saving session:', response.status);
             }
         } catch (error) {
-            console.error('DEBUG: Catch error:', error);
+            console.error('Error saving session:', error);
         }
     }
     
-    async listSessionFiles() {
+    async loadLeaderboard() {
         try {
             const response = await fetch('https://www.dropboxapi.com/2/files/list_folder', {
                 method: 'POST',
@@ -50,70 +48,40 @@ class DropboxHandler {
             });
             
             const data = await response.json();
-            return data.entries || [];
+            const files = data.entries || [];
+            const scores = [];
+            
+            for (const file of files) {
+                if (file.name.startsWith('pbart_session_')) {
+                    try {
+                        const downloadHeaders = {
+                            'Authorization': `Bearer ${this.accessToken}`,
+                            'Dropbox-API-Arg': JSON.stringify({path: file.path_lower})
+                        };
+                        
+                        const fileResponse = await fetch('https://content.dropboxapi.com/2/files/download', {
+                            method: 'POST',
+                            headers: downloadHeaders
+                        });
+                        
+                        if (fileResponse.ok) {
+                            const sessionData = await fileResponse.json();
+                            scores.push({
+                                subject_id: sessionData.subject_id,
+                                total_tokens: sessionData.total_accumulated_tokens
+                            });
+                        }
+                    } catch (e) {
+                        console.error('Error loading file:', e);
+                    }
+                }
+            }
+            
+            scores.sort((a, b) => b.total_tokens - a.total_tokens);
+            return scores;
         } catch (error) {
-            console.error('Error listing files:', error);
+            console.error('Error loading leaderboard:', error);
             return [];
         }
     }
-
-    async appendToLeaderboard(scoreLine) {
-        const path = `/Apps/pBART_data/pbart_leaderboard.txt`;
-        
-        try {
-            let existingContent = '';
-            
-            // Try to download existing file
-            try {
-                const downloadHeaders = {
-                    'Authorization': `Bearer ${this.accessToken}`,
-                    'Dropbox-API-Arg': JSON.stringify({path: path})
-                };
-                
-                const response = await fetch('https://content.dropboxapi.com/2/files/download', {
-                    method: 'POST',
-                    headers: downloadHeaders
-                });
-                
-                if (response.ok) {
-                    existingContent = await response.text();
-                }
-            } catch (e) {
-                // File doesn't exist yet
-            }
-            
-            // Check if this score already exists (duplicate prevention)
-            if (existingContent.includes(scoreLine.trim())) {
-                console.log('Score already saved, skipping duplicate');
-                return;
-            }
-            
-            // Append new score
-            const newContent = existingContent + scoreLine;
-            
-            // Wait before uploading
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            // Upload
-            const uploadResponse = await fetch('https://content.dropboxapi.com/2/files/upload', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${this.accessToken}`,
-                    'Dropbox-API-Arg': JSON.stringify({
-                        path: path,
-                        mode: 'overwrite'
-                    }),
-                    'Content-Type': 'application/octet-stream'
-                },
-                body: newContent
-            });
-            
-            if (uploadResponse.ok) {
-                console.log('Score saved!');
-            }
-        } catch (error) {
-            console.error('Error saving score:', error);
-        }
-    }
-    
 }
