@@ -37,6 +37,7 @@ class pBART {
         this.sequence_earned_tokens = 0;
         this.redirect_started = false;
         this.inter_trial_initialized = false;
+        this.session_saved = false;
         this.gameLoop();
     }
 
@@ -209,14 +210,14 @@ class pBART {
                         <div>Sequences completed: <strong>${this.sequence_number}/${this.max_sequences}</strong></div>
                     </div>
                     
-                    <p style="font-size: 18px; margin-top: 30px;">Redirecting to leaderboard...</p>
+                    <p style="font-size: 18px; margin-top: 30px;">Saving session...</p>
                 `;
                 
                 if (!this.redirect_started) {
                     this.redirect_started = true;
-                    setTimeout(() => {
+                    this.save_session().then(() => {
                         this.game_state = GameState.FINAL_LEADERBOARD;
-                    }, 2000);
+                    });
                 }
             } else if (this.game_state === GameState.BUST) {
                 content.innerHTML = `
@@ -412,6 +413,9 @@ class pBART {
 
 
     async save_session() {
+        if (this.session_saved) return;
+        this.session_saved = true;
+        
         const sessionData = {
             subject_id: this.subject_id,
             total_accumulated_tokens: this.total_accumulated_tokens,
