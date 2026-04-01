@@ -35,12 +35,12 @@ class DropboxHandler {
     
     async loadLeaderboard() {
         try {
-            const response = await fetch('https://www.dropboxapi.com/2/files/list_folder', {
+            const corsProxy = 'https://cors-anywhere.herokuapp.com/';
+            const response = await fetch(corsProxy + 'https://www.dropboxapi.com/2/files/list_folder', {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${this.accessToken}`,
-                    'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': '*'
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     path: '/Apps/pBART_data',
@@ -49,7 +49,7 @@ class DropboxHandler {
             });
             
             if (!response.ok) {
-                console.error('Dropbox error:', response.status, response.statusText);
+                console.error('Dropbox error:', response.status);
                 return [];
             }
             
@@ -60,14 +60,12 @@ class DropboxHandler {
             for (const file of files) {
                 if (file.name.startsWith('pbart_session_')) {
                     try {
-                        const downloadHeaders = {
-                            'Authorization': `Bearer ${this.accessToken}`,
-                            'Dropbox-API-Arg': JSON.stringify({path: file.path_lower})
-                        };
-                        
-                        const fileResponse = await fetch('https://content.dropboxapi.com/2/files/download', {
+                        const fileResponse = await fetch(corsProxy + 'https://content.dropboxapi.com/2/files/download', {
                             method: 'POST',
-                            headers: downloadHeaders
+                            headers: {
+                                'Authorization': `Bearer ${this.accessToken}`,
+                                'Dropbox-API-Arg': JSON.stringify({path: file.path_lower})
+                            }
                         });
                         
                         if (fileResponse.ok) {
