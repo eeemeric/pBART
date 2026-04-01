@@ -295,20 +295,26 @@ class pBART {
                 `;
                 
                 content.innerHTML = leaderboardHTML;
-            } else if (this.game_state === GameState.FINAL_LEADERBOARD) {
+            } else if (this.game_state === GameState.WIN && this.sequence_number >= this.max_sequences) {
                 content.innerHTML = `
-                    <h1 style="font-size: 48px; margin-bottom: 40px;">🏆 Leaderboard</h1>
+                    <h1 style="font-size: 48px; color: green; margin-bottom: 30px;">Session Complete!</h1>
                     
-                    <div style="font-size: 24px; margin: 30px 0;">
-                        <p>Your final score: <strong>${this.total_accumulated_tokens}</strong> tokens</p>
+                    <div style="font-size: 28px; margin: 30px 0;">
+                        <div>Total tokens earned: <strong>${this.total_accumulated_tokens}</strong></div>
+                        <div>Sequences completed: <strong>${this.sequence_number}/${this.max_sequences}</strong></div>
                     </div>
                     
-                    <p style="font-size: 18px; margin-top: 30px;">Leaderboard data coming soon!</p>
-                    
-                    <button style="padding: 15px 30px; font-size: 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;" onclick="window.pbart_instance.restart_game()">
-                        Play Again
-                    </button>
+                    <p style="font-size: 18px; margin-top: 30px;">Saving session...</p>
                 `;
+                
+                if (!this.redirect_started) {
+                    this.redirect_started = true;
+                    this.save_session().then(() => {
+                        setTimeout(() => {
+                            this.game_state = GameState.FINAL_LEADERBOARD;
+                        }, 2000);
+                    });
+                }
             }
         }
     }
@@ -370,7 +376,7 @@ class pBART {
         }
     }
 
-    quit_to_leaderboard() {
+    async quit_to_leaderboard() {
         await this.save_session();
         this.game_state = GameState.FINAL_LEADERBOARD;
     }
