@@ -220,22 +220,25 @@ class pBART {
                     });
                 }
             } else if (this.game_state === GameState.BUST) {
-                content.innerHTML = `
-                    <h1 style="font-size: 48px; color: red; margin-bottom: 30px;">BUST!</h1>
-                    
-                    <div style="font-size: 28px; margin: 30px 0; color: red;">
-                        <div>You exceeded 20 tokens!</div>
-                        <div>All tokens lost.</div>
-                    </div>
-                    
-                    <button style="padding: 15px 30px; font-size: 20px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;" onclick="window.pbart_instance.next_sequence()">
-                        Next Sequence
-                    </button>
-                    
-                    <button style="position: fixed; bottom: 20px; right: 20px; padding: 15px 30px; font-size: 16px; background-color: #666; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="window.pbart_instance.quit_to_leaderboard()">
-                        Quit
-                    </button>
-                `;
+                if (!this.bust_displayed) {
+                    this.bust_displayed = true;
+                    content.innerHTML = `
+                        <h1 style="font-size: 48px; color: red; margin-bottom: 30px;">BUST!</h1>
+                        
+                        <div style="font-size: 28px; margin: 30px 0; color: red;">
+                            <div>You exceeded 20 tokens!</div>
+                            <div>All tokens lost.</div>
+                        </div>
+                        
+                        <button style="padding: 15px 30px; font-size: 20px; background-color: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 20px;" onclick="window.pbart_instance.next_sequence()">
+                            Next Sequence
+                        </button>
+                        
+                        <button style="position: fixed; bottom: 20px; right: 20px; padding: 15px 30px; font-size: 16px; background-color: #666; color: white; border: none; border-radius: 5px; cursor: pointer;" onclick="window.pbart_instance.quit_to_leaderboard()">
+                            Quit
+                        </button>
+                    `;
+                }
             } else if (this.game_state === GameState.UPDATE_SEQUENCE) {
                 content.innerHTML = `
                     <div style="font-size: 14px; margin-bottom: 30px; text-align: left;">
@@ -384,9 +387,13 @@ class pBART {
 
 
     async goToLeaderboard() {
-        const scores = await this.dropbox.loadLeaderboard();
-        this.leaderboard_data = scores;
+        this.leaderboard_data = this.loadScoresLocally();
         this.game_state = GameState.LEADERBOARD;
+    }
+
+
+    loadScoresLocally() {
+        return JSON.parse(localStorage.getItem('pbart_leaderboard') || '[]');
     }
 
 
@@ -422,7 +429,18 @@ class pBART {
             total_sequences: this.sequence_number
         };
         
+        // Save to Dropbox
         await this.dropbox.saveSessionData(sessionData);
+        
+        // Save to localStorage for leaderboard
+        let leaderboard = JSON.parse(localStorage.getItem('pbart_leaderboard') || '[]');
+        leaderboard.push({
+            subject_id: this.subject_id,
+            total_tokens: this.total_accumulated_tokens
+        });
+        leaderboard.sort((a, b) => b.total_tokens - a.total_tokens);
+        leaderboard = leaderboard.slice(0, 10);
+        localStorage.setItem('pbart_leaderboard', JSON.stringify(leaderboard));
     }
 
     
@@ -434,6 +452,7 @@ class pBART {
         this.total_accumulated_tokens = 0;
         this.sequence_earned_tokens = 0;
         this.redirect_started = false;
+        this.bust_displayed = false;
     }
         
     gameLoop() {
